@@ -1,14 +1,20 @@
-<script>
-    export let data;
-  </script>
+<script lang="ts">
+  export let data;
 
-    <h1>Welcome to SvelteKit</h1>
-    <p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
-    <ul>
-        <li>HOLA</li>
-        {#each data.statuses as status}
-          <li>{status.name}</li>
-        {/each}
-        <li>CHAU</li>
-    </ul>
-      
+  interface Status {
+    id: number;
+    name: string;
+  }
+
+  let statusData: Status[] = data.statusData;
+</script>
+
+<div>
+  <h1>Status List</h1>
+  {#if statusData.length === 0}
+    <p>No status data available</p>
+  {/if}
+  {#each statusData as status}
+    <p>{status.id}: {status.name}</p>
+  {/each}
+</div>
