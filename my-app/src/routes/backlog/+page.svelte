@@ -1,5 +1,5 @@
-<h1>Backlog Page Placeholder</h1>
 <script lang="ts">
+	import DashboardLayout from '$lib/layouts/DashboardLayout.svelte';
   import { supabase } from '$lib/supabase';
   import { onMount } from 'svelte';
 
@@ -26,12 +26,16 @@
   });
 </script>
 
-<h1>Test Supabase</h1>
+<DashboardLayout title="Backlog">
+  <h1>Backlog Page Placeholder</h1>
 
-{#if loading}
-  <p>Loading..</p>
-{:else if error}
-  <p style="color: red;">Błąd: {error.message}</p>
-{:else if data}
-  <pre>{JSON.stringify(data, null, 2)}</pre>
-{/if}
+  <h1>Test Supabase</h1>
+
+  {#if loading}
+    <p>Loading..</p>
+  {:else if error}
+    <p style="color: red;">Błąd: {error.message}</p>
+  {:else if data}
+    <pre>{JSON.stringify(data, null, 2)}</pre>
+  {/if}
+</DashboardLayout>

@@ -34,9 +34,9 @@
     </div>
     <nav class="nav-links">
       <a href="/">Home</a>
-      <a href="/#features">Features</a>
-      <a href="/#how-it-works">How It Works</a>
-      <a href="/#pricing">Pricing</a>
+      <a href="/features">Features</a>
+      <a href="/how-it-works">How It Works</a>
+      <a href="/pricing">Pricing</a>
       <a href="/login">Login</a>
       <a href="/register">Register</a>
     </nav>

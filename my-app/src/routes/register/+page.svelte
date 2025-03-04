@@ -1,10 +1,12 @@
 <script lang="ts">
+  import LandingLayout from '$lib/layouts/LandingLayout.svelte';
   import { handleRegister } from './register';
 
   let email: string = '';
   let password: string = '';
 </script>
 
+<LandingLayout title="Register">
 <div class="container">
   <h2>Register</h2>
   <form on:submit={handleRegister}>
@@ -19,6 +21,7 @@
     <button type="submit" class="register-button">Register</button>
   </form>
 </div>
+</LandingLayout>
 
 <style>
   .container {

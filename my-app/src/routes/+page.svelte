@@ -1,4 +1,5 @@
-<!-- <script lang="ts">
+<script lang="ts">
+  import LandingLayout from '$lib/layouts/LandingLayout.svelte';
   export let data;
 
   interface Status {
@@ -9,21 +10,7 @@
   let statusData: Status[] = data.statusData;
 </script>
 
-<div>
-  <h1>Status List</h1>
-  {#if statusData.length === 0}
-    <p>No status data available</p>
-  {/if}
-  {#each statusData as status}
-    <p>{status.id}: {status.name}</p>
-  {/each}
-</div> -->
-<script>
-  // Add any necessary script here
-</script>
-
 <style>
-  /* Add your styles here */
   .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -55,6 +42,7 @@
   }
 </style>
 
+<LandingLayout title="Landing">
 <div class="container">
 
   <main class="main-content">
@@ -68,6 +56,18 @@
 
   <section class="dashboard-preview">
     <h3>ScrumTool Dashboard Preview</h3>
-    <img src="dashboard-preview.png" alt="ScrumTool Dashboard Preview">
+    <!-- <img src="dashboard-preview.png" alt="ScrumTool Dashboard Preview"> -->
   </section>
+
+  <div>
+    <h1>Status List</h1>
+    {#if statusData.length === 0}
+      <p>No status data available</p>
+    {/if}
+    {#each statusData as status}
+      <p>{status.id}: {status.name}</p>
+    {/each}
+  </div>
+
 </div>
+</LandingLayout>
