@@ -1,3 +1,4 @@
+<h1>Backlog Page Placeholder</h1>
 <script lang="ts">
   import { supabase } from '$lib/supabase';
   import { onMount } from 'svelte';
