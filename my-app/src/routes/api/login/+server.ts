@@ -13,4 +13,3 @@ export async function POST(event: RequestEvent) {
 
     return json({ data });
 }
-

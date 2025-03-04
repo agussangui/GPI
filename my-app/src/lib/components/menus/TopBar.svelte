@@ -1,12 +1,24 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
+	import { supabase } from '$lib/supabase';
 
 	let currentUser = {
-		avatar: '/images/avatar.png'
+  		avatar: '/images/avatar.png'
 	};
 
 	function isRouteActive(path: string): boolean {
-		return page.url.pathname === path;
+  		return page.url.pathname === path;
+	}
+
+	async function handleLogout(): Promise<void> {
+  		const { error } = await supabase.auth.signOut();
+  		if (error) {
+    		alert('Error logging out: ' + error.message);
+  		} else {
+    		alert('Logout successful');
+    		goto('/login');
+  		}
 	}
 </script>
 
@@ -34,6 +46,7 @@
 		<a href="/profile" class="user-avatar">
 			<img src={currentUser.avatar} alt="User avatar" />
 		</a>
+		<button class="logout-button" on:click={handleLogout}>Logout</button>
 	</div>
 </header>
 
@@ -110,4 +123,19 @@
 			object-fit: cover;
 		}
 	}
+
+	.logout-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-left: 1rem;
+    transition: background-color 0.3s ease-in-out;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
 </style>
