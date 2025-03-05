@@ -1,9 +1,7 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
 import { supabase } from '$lib/supabase';
 
-export async function GET(event: RequestEvent) {
-    const { params } = event;
-    const project_id = params.id;
+export async function GET(project_id: string) {
 
     if (!project_id) {
         return json({ error: 'Project ID is required' }, { status: 400 });

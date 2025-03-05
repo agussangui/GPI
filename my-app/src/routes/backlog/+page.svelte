@@ -3,33 +3,20 @@
   import { supabase } from '$lib/supabase';
   import { onMount } from 'svelte';
   import UserStoryList from '$lib/components/user story/user_story_list.svelte';
-  import { GET } from '../api/user_stories/+server.ts';
+  import { GET } from '../api/projects/[id]/user_stories/+server.ts';
   import type { UserStoryInterface } from '../api/models/UserStory.ts';
+  import type { RequestEvent } from '@sveltejs/kit';
+	import UserStory from '$lib/components/user story/user_story.svelte';
+  import { UserStoryClass } from '../api/models/UserStory.ts';
 
-  interface TestData {
-    id: number;
-  }
-
-
-
-  let data: TestData[] | null = null;
   let error: Error | null = null;
   let loading = true;
-  var backlog: UserStoryInterface[] | null = null;
+  var backlog: UserStoryClass[] ;
 
-  async function testDB() {
-    const { data: testData, error: testError } = await supabase
-      .from('test')
-      .select('*');
-
-    data = testData as TestData[];
-    error = testError;
-    loading = false;
-  }
 
   async function getBacklog() {
-    const response = await GET();
-    backlog = response.body;
+    const response = await GET("d659910f-919e-4068-bbeb-45fd3915ce5b");
+    backlog = UserStoryClass.getUserStoriesFromJson( await response.json()  ); 
     console.log(backlog)
     loading = false;
   }
@@ -43,7 +30,7 @@
 <DashboardLayout title={"Backlog"}>
   
 
-<UserStoryList backlog={data}/>
+<UserStoryList backlog={backlog}/>
 
   {#if loading}
     <p>Loading..</p>

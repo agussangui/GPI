@@ -38,26 +38,3 @@ export async function POST(event: RequestEvent) {
     }
 }
 
-export async function GET() {
-    try {
-        const { data, error } = await supabase
-            .from('user_stories')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (error) {
-            throw new Error(error.message);
-        }
-
-        return json(data, { status: 200 });
-    } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
-        return json({ error: errorMessage }, { status: 500 });
-    }
-}
-
-/**
- * POST endpoint: Adds a new backlog item.
- * This endpoint expects a JSON payload containing the details of the new item.
- * The "sprint" field is set to 0 by default to indicate that the item belongs to the backlog.
- */
