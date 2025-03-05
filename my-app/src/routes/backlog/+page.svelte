@@ -3,20 +3,19 @@
   import { supabase } from '$lib/supabase';
   import { onMount } from 'svelte';
   import UserStoryList from '$lib/components/user story/user_story_list.svelte';
-	import UserStory from '$lib/components/user story/user_story.svelte';
-  import { GET } from '../api/backlog/+server';
+  import { GET } from '../api/user_stories/+server.ts';
+  import type { UserStoryInterface } from '../api/models/UserStory.ts';
 
   interface TestData {
     id: number;
   }
 
-  interface UserStoryInterface {
-    id: number;
-  }
+
 
   let data: TestData[] | null = null;
   let error: Error | null = null;
   let loading = true;
+  var backlog: UserStoryInterface[] | null = null;
 
   async function testDB() {
     const { data: testData, error: testError } = await supabase
@@ -30,13 +29,13 @@
 
   async function getBacklog() {
     const response = await GET();
-    data = response.body as UserStoryInterface[];
-    error = response;
+    backlog = response.body;
+    console.log(backlog)
     loading = false;
   }
 
   onMount(() => {
-    // GET();
+    getBacklog();
   });
 </script>
 
