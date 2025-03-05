@@ -1,9 +1,4 @@
-<script>
-  export const title = "Welcome to ScrumTool";
-</script>
-
 <style>
-  /* Add your styles here */
   .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -30,13 +25,9 @@
 <div class="container">
   <header class="header">
     <div class="logo">
-      <h1>ScrumTool</h1>
+      <a href="/">SprintFlow</a>
     </div>
     <nav class="nav-links">
-      <a href="/">Home</a>
-      <a href="/features">Features</a>
-      <a href="/how-it-works">How It Works</a>
-      <a href="/pricing">Pricing</a>
       <a href="/login">Login</a>
       <a href="/register">Register</a>
     </nav>
@@ -47,6 +38,6 @@
   </main>
 
   <footer class="footer">
-    <p>&copy; 2025 ScrumTool. All rights reserved.</p>
+    <p>&copy; 2025 SprintFlow. All rights reserved.</p>
   </footer>
 </div>

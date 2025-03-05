@@ -58,10 +58,14 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    transition: border-color 0.3s ease-in-out;
+    transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    background-color: #fff;
+    color: #000;
   }
   input:focus {
     border-color: #007bff;
+    background-color: #fff;
+    color: #000;
   }
   .register-button {
     width: 100%;

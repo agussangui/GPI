@@ -6,7 +6,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   const session = await supabase.auth.getSession();
   
   // List of paths that require authentication
-  const protectedPaths = ['/backlog', '/board', '/insights', '/profile', '/timeline'];
+  const protectedPaths = ['/backlog', '/board', '/insights', '/profile', '/timeline', '/projects'];
 
   // Check if the current path is protected and if the user is not logged in
   if (protectedPaths.includes(event.url.pathname) && !session.data.session) {

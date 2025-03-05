@@ -10,16 +10,27 @@ export async function PUT(event: RequestEvent) {
     }
 
     try {
+        // Get the current session and user info
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        if (sessionError || !session?.user) {
+            return json({ error: 'Unauthorized: User is not logged in' }, { status: 401 });
+        }
+
+        const user = session.user;
+
         const { name } = await request.json();
 
         if (!name) {
             return json({ error: 'Project name is required' }, { status: 400 });
         }
 
+        // Update the project; RLS will ensure the user is the owner
         const { data, error } = await supabase
             .from('projects')
             .update({ name })
             .eq('id', id)
+            .eq('owner_id', user.id)  // Ensures only the owner can update
             .select()
             .single();
 
@@ -43,10 +54,21 @@ export async function DELETE(event: RequestEvent) {
     }
 
     try {
+        // Get the current session and user info
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        if (sessionError || !session?.user) {
+            return json({ error: 'Unauthorized: User is not logged in' }, { status: 401 });
+        }
+
+        const user = session.user;
+
+        // Delete the project; RLS will ensure the user is the owner
         const { error } = await supabase
             .from('projects')
             .delete()
-            .eq('id', id);
+            .eq('id', id)
+            .eq('owner_id', user.id);  // Ensures only the owner can delete
 
         if (error) {
             throw new Error(error.message);

@@ -1,14 +1,11 @@
 <script lang="ts">
-	//import '$lib/styles/global.css';
 	import TopBar from '$lib/components/menus/TopBar.svelte';
-	import SideMenu from '$lib/components/menus/SideMenu.svelte';
 	const {title} = $props()
 </script>
 
 <div class="app-container">
 	<TopBar />
 	<div class="content-container">
-		<SideMenu />
 		<main class="mr-19">
 			<div class="p-5">
 				

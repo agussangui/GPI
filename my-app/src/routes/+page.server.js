@@ -1,13 +1,13 @@
-import { supabase } from '$lib/supabase';
+// import { supabase } from '$lib/supabase';
 
-export async function load() {
-  const { data, error } = await supabase.from('status').select('*');
+// export async function load() {
+//   const { data, error } = await supabase.from('statuses').select('*');
 
-  if (error) {
-    console.error('Error fetching data:', error);
-  }
+//   if (error) {
+//     console.error('Error fetching data:', error);
+//   }
 
-  return {
-    statusData: data || [],
-  };  
-}
+//   return {
+//     statusData: data || [],
+//   };  
+// }

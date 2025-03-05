@@ -1,73 +1,96 @@
 <script lang="ts">
   import LandingLayout from '$lib/layouts/LandingLayout.svelte';
-  export let data;
-
-  interface Status {
-    id: number;
-    name: string;
-  }
-
-  let statusData: Status[] = data.statusData;
 </script>
 
 <style>
+  :root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --bg-light: #f8f9fa;
+    --text-dark: #212529;
+  }
+
   .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
   }
-  .header {
+
+  .hero {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    padding: 20px 0;
-  }
-  .nav-links {
-    display: flex;
-    gap: 20px;
-  }
-  .main-content {
     text-align: center;
-    padding: 50px 0;
+    padding: 80px 20px;
+    background: var(--bg-light);
+    border-radius: 10px;
   }
+
+  .hero h2 {
+    font-size: 2.5rem;
+    color: var(--text-dark);
+  }
+
+  .hero p {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    max-width: 800px;
+    margin-top: 10px;
+  }
+
   .buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
     margin-top: 20px;
+    display: flex;
+    gap: 20px;
   }
+
+  .button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    color: #fff;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+  .button:hover {
+    background: darkblue;
+  }
+
   .dashboard-preview {
     margin-top: 50px;
     text-align: center;
   }
+
+  .dashboard-placeholder {
+    width: 100%;
+    max-width: 900px;
+    height: 400px;
+    background: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary-color);
+    border-radius: 10px;
+  }
 </style>
 
 <LandingLayout title="Landing">
-<div class="container">
+  <div class="container">
+    <section class="hero">
+      <h2>Build better products with agile development</h2>
+      <p>ScrumTool helps teams track projects, prioritize work, and ship value to customers faster. Simplify your workflow with our intuitive scrum tools.</p>
+      <div class="buttons">
+        <a href="/register" class="button">Get Started</a>
+        <a href="/login" class="button" style="background: var(--secondary-color);">Log In</a>
+      </div>
+    </section>
 
-  <main class="main-content">
-    <h2>Build better products with agile development</h2>
-    <p>ScrumTool helps teams track projects, prioritize work, and ship value to customers faster. Simplify your workflow with our intuitive scrum tools.</p>
-    <div class="buttons">
-      <button>Start for free</button>
-      <button>Book a demo</button>
-    </div>
-  </main>
-
-  <section class="dashboard-preview">
-    <h3>ScrumTool Dashboard Preview</h3>
-    <!-- <img src="dashboard-preview.png" alt="ScrumTool Dashboard Preview"> -->
-  </section>
-
-  <div>
-    <h1>Status List</h1>
-    {#if statusData.length === 0}
-      <p>No status data available</p>
-    {/if}
-    {#each statusData as status}
-      <p>{status.id}: {status.name}</p>
-    {/each}
+    <!-- <section class="dashboard-preview">
+      <h3>ScrumTool Dashboard Preview</h3>
+      <div class="dashboard-placeholder">Dashboard Preview Image</div>
+    </section> -->
   </div>
-
-</div>
 </LandingLayout>

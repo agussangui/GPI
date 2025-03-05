@@ -30,24 +30,24 @@
   
   <header class="top-bar">
 	<div class="top-bar__left">
-	  <a class="logo" href="/">
+	  <a class="logo" href="/projects">
 		<img src="/images/logo.svg" alt="Logo" class="logo__image" />
 	  </a>
 	  <nav class="main-nav">
 		<ul class="main-nav__list">
 		  <li>
-			<a href="/" class="main-nav__link {isRouteActive('/') ? 'main-nav__link--active' : ''}">Projects</a>
+			<a href="/projects" class="main-nav__link {isRouteActive('/') ? 'main-nav__link--active' : ''}">Projects</a>
 		  </li>
-		  <li>
+		  <!-- <li>
 			<a href="/" on:click={() => alert('Create new clicked')} class="main-nav__link">Create new</a>
-		  </li>
+		  </li> -->
 		</ul>
 	  </nav>
 	</div>
 	<div class="top-bar__right">
-	  <a href="/profile" class="user-avatar">
-		<img src={currentUser.avatar} alt="User avatar" />
-	  </a>
+	  <!-- <a href="/profile" class="user-avatar">
+		<img src={currentUser.avatar} alt="User avatar" />		  
+	  </a> -->
 	  <button class="logout-button" on:click={handleLogout}>Logout</button>
 	</div>
   </header>
