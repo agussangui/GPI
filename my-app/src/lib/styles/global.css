@@ -1,0 +1,59 @@
+
+@plugin "daisyui/theme" {
+	name: "figma";
+	default: true;
+	prefersdark: false;
+	color-scheme: "light";
+	--color-base-100: oklch(98% 0.001 106.423);
+	--color-base-200: oklch(97% 0.001 106.424);
+	--color-base-300: oklch(92% 0.003 48.717);
+	--color-base-content: oklch(21% 0.006 56.043);
+	--color-primary: oklch(65% 0.25 220);
+	--color-primary-content: oklch(28% 0.091 267.935);
+	--color-secondary: oklch(81% 0.111 293.571);
+	--color-secondary-content: oklch(28% 0.141 291.089);
+	--color-accent: oklch(80% 0.105 251.813);
+	--color-accent-content: oklch(28% 0.091 267.935);
+	--color-neutral: oklch(44% 0.011 73.639);
+	--color-neutral-content: oklch(98% 0.001 106.423);
+	--color-info: oklch(74% 0.16 232.661);
+	--color-info-content: oklch(29% 0.066 243.157);
+	--color-success: oklch(77% 0.152 181.912);
+	--color-success-content: oklch(27% 0.046 192.524);
+	--color-warning: oklch(85% 0.199 91.936);
+	--color-warning-content: oklch(28% 0.066 53.813);
+	--color-error: oklch(71% 0.194 13.428);
+	--color-error-content: oklch(27% 0.105 12.094);
+	--radius-selector: 2rem;
+	--radius-field: 0.5rem;
+	--radius-box: 1rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 0.5px;
+	--depth: 1;
+	--noise: 0;
+  }
+  
+
+body {
+	font-family: Montserrat, sans-serif;
+	font-size: 16px;
+	color: var(--text-color);
+	background-color: var(--background-light);
+}
+
+/* Variables */
+:root {
+	--primary-color: #3bacf7;
+	--primary-color-dark: #3672b5;
+	--text-color: black;
+	--text-color-light: #666;
+	--border-color: #e0e0e0;
+	--background-light: white;
+	--background-dark: #ededed;
+	--hover-background-dark: rgba(0, 0, 0, 0.05);
+	--hover-background-primary: rgba(74, 144, 226, 0.1);
+
+	--drop-shadow: 0px 0px 9.9px -1px rgba(0, 0, 0, 0.25);
+}
+

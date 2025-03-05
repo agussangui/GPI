@@ -1,7 +1,7 @@
 <script lang="ts">
 	import DashboardLayout from '$lib/layouts/DashboardLayout.svelte';
   import { onMount } from 'svelte';
-  import UserStoryList from '$lib/components/user story/user_story_list.svelte';
+  import UserStoryList from '$lib/components/userStory/userStoryList.svelte';
   import { GET } from '../api/projects/[id]/user_stories/+server.ts';
   import { UserStoryClass } from '../api/models/UserStory.ts';
 

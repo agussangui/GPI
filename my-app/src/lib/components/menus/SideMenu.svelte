@@ -4,6 +4,7 @@
 	import Board from '$lib/components/icons/Board.svelte';
 	import Backlog from '$lib/components/icons/Backlog.svelte';
 	import Timeline from '$lib/components/icons/Timeline.svelte';
+	import AddUserStoryModal from '../userStory/addUserStoryModal.svelte';
 
 	const menuItems = [
 		{ id: 'insights', label: 'Insights', icon: Insights, href: '/insights' },
@@ -15,7 +16,12 @@
 	function isRouteActive(path: string): boolean {
 		return page.url.pathname === path;
 	}
+
+	let {showModal} = $state(false);
+    
 </script>
+
+    <AddUserStoryModal bind:showModal/>
 
 <aside class="side-menu-wrapper">
 	<div class="side-menu">
@@ -42,10 +48,7 @@
 		<div class="new-issue-container">
 			<button
 				class="new-issue-btn"
-				on:click={() => {
-					alert('New Issue clicked');
-				}}
-			>
+				onclick={()=>showModal = true}>
 				Create issue
 			</button>
 		</div>
