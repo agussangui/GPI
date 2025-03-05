@@ -2,8 +2,15 @@
 	import DashboardLayout from '$lib/layouts/DashboardLayout.svelte';
   import { supabase } from '$lib/supabase';
   import { onMount } from 'svelte';
+  import UserStoryList from '$lib/components/user story/user_story_list.svelte';
+	import UserStory from '$lib/components/user story/user_story.svelte';
+  import { GET } from '../api/backlog/+server';
 
   interface TestData {
+    id: number;
+  }
+
+  interface UserStoryInterface {
     id: number;
   }
 
@@ -21,15 +28,23 @@
     loading = false;
   }
 
+  async function getBacklog() {
+    const response = await GET();
+    data = response.body as UserStoryInterface[];
+    error = response;
+    loading = false;
+  }
+
   onMount(() => {
-    testDB();
+    // GET();
   });
 </script>
 
-<DashboardLayout title="Backlog">
-  <h1>Backlog Page Placeholder</h1>
 
-  <h1>Test Supabase</h1>
+<DashboardLayout title={"Backlog"}>
+  
+
+<UserStoryList backlog={data}/>
 
   {#if loading}
     <p>Loading..</p>
