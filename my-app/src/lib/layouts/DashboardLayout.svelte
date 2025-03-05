@@ -1,20 +1,28 @@
 <script lang="ts">
-	import '$lib/styles/global.scss';
+	import '$lib/styles/global.css';
 	import TopBar from '$lib/components/menus/TopBar.svelte';
 	import SideMenu from '$lib/components/menus/SideMenu.svelte';
+	const {title} = $props()
 </script>
 
 <div class="app-container">
 	<TopBar />
 	<div class="content-container">
 		<SideMenu />
-		<main>
+		<main class="mr-19">
+			<div class="p-5">
+				
+			<span class="font-medium text-3xl ">{title}</span>
+			<div class="mt-5"></div>
 			<slot />
+			</div>
+			
 		</main>
 	</div>
 </div>
 
-<style lang="scss">
+
+<style lang="css">
 	.app-container {
 		display: flex;
 		flex-direction: column;

@@ -58,7 +58,6 @@
 	  justify-content: space-between;
 	  align-items: center;
 	  padding: 2rem 1rem;
-	  border-bottom: 1px solid var(--text-color);
 	  background-color: var(--background-light);
 	}
   
