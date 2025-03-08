@@ -17,10 +17,10 @@
 
     // Dynamically generate menu items with correct hrefs based on projectId
     $: menuItems = [
-        //{ id: 'insights', label: 'Insights', icon: Insights, href: `/projects/${projectId}/insights` },
+        { id: 'insights', label: 'Insights', icon: Insights, href: `/projects/${projectId}/insights` },
         { id: 'backlog', label: 'Backlog', icon: Backlog, href: `/projects/${projectId}/backlog` },
-        //{ id: 'board', label: 'Board', icon: Board, href: `/projects/${projectId}/board` },
-        //{ id: 'timeline', label: 'Timeline', icon: Timeline, href: `/projects/${projectId}/timeline` }
+        { id: 'board', label: 'Board', icon: Board, href: `/projects/${projectId}/board` },
+        { id: 'timeline', label: 'Timeline', icon: Timeline, href: `/projects/${projectId}/timeline` }
     ];
 
     // Check if the route is active
@@ -35,11 +35,11 @@
 
 <aside class="side-menu-wrapper">
     <div class="side-menu">
-        <div class="project-title">GPI</div>
+        <div class="project-title text-xl">GPI</div>
         <nav class="side-nav">
             <ul class="side-nav__list">
                 {#each menuItems as item}
-                    <li class="side-nav__item">
+                    <li class="side-nav__item text-sm">
                         <a
                             href={item.href}
                             class="side-nav__link {isRouteActive(item.href) ? 'side-nav__link--active' : ''}"
@@ -48,7 +48,7 @@
                             <span class="side-nav__icon">
                                 <svelte:component this={item.icon} />
                             </span>
-                            <span class="side-nav__label">{item.label}</span>
+                            <span>{item.label}</span>
                         </a>
                     </li>
                 {/each}
@@ -71,21 +71,21 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 0 3rem;
+        padding: 0 2rem;
+        margin-top: -8rem;
     }
 
     .side-menu {
         border-radius: 0.5rem;
-        min-width: 15rem;
+        min-width: 13rem;
         background-color: var(--background-dark);
         display: flex;
         flex-direction: column;
-        padding: 2rem;
+        padding: 1.2rem;
         box-shadow: var(--drop-shadow);
     }
 
     .project-title {
-        font-size: 1.5rem;
         font-weight: 600;
         margin-bottom: 2rem;
         text-align: center;
@@ -101,7 +101,7 @@
         }
 
         &__item {
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.1rem;
         }
 
         &__link {
@@ -133,9 +133,6 @@
             height: 24px;
         }
 
-        &__label {
-            font-size: 1rem;
-        }
     }
 
     .new-issue-container {
@@ -149,7 +146,7 @@
         background-color: var(--primary-color);
         color: var(--background-light);
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
         font-size: 1rem;
         cursor: pointer;
         transition: background-color 0.2s ease;
