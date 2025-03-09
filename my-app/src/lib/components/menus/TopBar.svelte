@@ -33,14 +33,14 @@
 	  <a class="logo" href="/projects">
 		<img src="/images/logo.svg" alt="Logo" class="logo__image" />
 	  </a>
-	  <nav class="main-nav">
+	  <nav class="main-nav text-base">
 		<ul class="main-nav__list">
-		  <li>
+		  <li class="flex">
 			<a href="/projects" class="main-nav__link {isRouteActive('/') ? 'main-nav__link--active' : ''}">Projects</a>
 		  </li>
-		  <!-- <li>
-			<a href="/" on:click={() => alert('Create new clicked')} class="main-nav__link">Create new</a>
-		  </li> -->
+		<li >
+			<a href="/projects" class="main-nav__link"><button class="btn btn-white	opacity-40">Create new</button></a>
+		  </li> 
 		</ul>
 	  </nav>
 	</div>
@@ -98,7 +98,6 @@
 		cursor: pointer;
 		text-decoration: none;
 		color: var(--text-color);
-		font-size: 20px;
 		padding: 0.5rem 0;
 		position: relative;
   

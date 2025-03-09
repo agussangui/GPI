@@ -12,7 +12,7 @@
 		<main class="mr-19">
 			<div class="p-5">
 				
-			<span class="font-medium text-3xl ">{title}</span>
+			<span class="font-medium text-2xl ">{title}</span>
 			<div class="mt-5"></div>
 			<slot />
 			</div>

@@ -12,16 +12,16 @@
 
     async function submitForm(event: SubmitEvent) {
         event.preventDefault();
-        const form = event.currentTarget as HTMLFormElement; // ✅ Usa `currentTarget` 
-        const formData = new FormData(form); // ✅ Ahora formData funciona correctamente
+        const form = event.currentTarget as HTMLFormElement; 
+        const formData = new FormData(form); 
 
         const jsonData = {
-            project_id: formData.get('project_id') as string, // 👈 Asegura que sea string
-            sprint_id: formData.get('sprint_id') || null, // 👈 Si no existe, asigna null
+            project_id: formData.get('project_id') as string,
+            sprint_id: formData.get('sprint_id') || null, 
             title: formData.get('title') as string,
             description: formData.get('description') || null,
-            priority: Number(formData.get('priority')), // 👈 Convierte a número
-            story_points: Number(formData.get('story_points')) || null, // 👈 Convierte a número
+            priority: Number(formData.get('priority')), 
+            story_points: Number(formData.get('story_points')) || null, 
         };
 
         try {
@@ -55,7 +55,7 @@
         <input name="project_id" value="d659910f-919e-4068-bbeb-45fd3915ce5b" type="hidden" />
         
       <div class="modal-action">
-              <!-- 🔵 set false on click -->
+              
         <button class="btn" onclick={()=> showModal=false}>Add</button>
       </div>
       </form>
