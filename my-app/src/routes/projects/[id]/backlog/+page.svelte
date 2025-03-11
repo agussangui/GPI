@@ -35,6 +35,7 @@
             projectId = page.params.id;
         }
     getBacklog(projectId);
+    
   });
 </script>
 
