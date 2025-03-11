@@ -1,4 +1,5 @@
 import { goto } from '$app/navigation';
+import { userStore } from '$stores/userStore';
 
 export async function handleLogin(event: Event): Promise<void> {
     event.preventDefault();
@@ -21,6 +22,10 @@ export async function handleLogin(event: Event): Promise<void> {
 
         if (response.ok) {
             alert('Login successful');
+            userStore.set({
+                authUser: result.data.user,
+                session: result.data.session,
+            });
             goto('/projects');
         } else {
             alert('Error logging in: ' + result.error);

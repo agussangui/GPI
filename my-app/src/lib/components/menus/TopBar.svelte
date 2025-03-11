@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+	import { userStore } from '$stores/userStore';
   
 	let currentUser = {
 	  avatar: '/images/avatar.png'
@@ -21,6 +22,7 @@
   
 	  if (response.ok) {
 		alert('Logout successful');
+		userStore.set({ authUser: null, session: null });
 		goto('/login');
 	  } else {
 		alert('Error logging out: ' + result.error);
