@@ -13,7 +13,7 @@ export async function GET(event: RequestEvent) {
         const { data, error } = await supabase
             .from('projects')
             .select('*')
-            .eq('owner_id', user_id);
+            .eq('user_id', user_id);
 
         if (error) {
             throw new Error(error.message);

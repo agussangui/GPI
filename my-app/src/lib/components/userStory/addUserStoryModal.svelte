@@ -1,14 +1,15 @@
 <script lang="ts">
-	import type {UserStoryInterface} from "../../../routes/api/models/UserStory.ts";
-    import { POST } from "../../../routes/api/user_stories/+server.ts";
+	import type {UserStoryInterface} from "$models/userStory";
     import CloseBtn from "../icons/CloseBtn.svelte";
     import ErrorToast from "../alerts/errorToast.svelte";
+    import { page } from '$app/state';
+    import { error, type RequestEvent } from '@sveltejs/kit';
+    import { onMount } from "svelte";
 
     export let showModal :boolean;
     let newUserStory: UserStoryInterface;
     let errorToaster : boolean = false;
-
-    import { error, type RequestEvent } from '@sveltejs/kit';
+    let projectId: string;   
 
     async function submitForm(event: SubmitEvent) {
         event.preventDefault();
@@ -16,7 +17,7 @@
         const formData = new FormData(form); 
 
         const jsonData = {
-            project_id: formData.get('project_id') as string,
+            project_id: projectId,
             sprint_id: formData.get('sprint_id') || null, 
             title: formData.get('title') as string,
             description: formData.get('description') || null,
@@ -39,6 +40,12 @@
         console.error('❌ Error en la petición:', error);
         }
     }
+
+    onMount(()=>{
+      if (page.params) {
+            projectId = page.params.id;
+        }
+    })
 </script>
 
 <div class="modal" data-theme="light" class:modal-open={showModal}>
@@ -52,7 +59,6 @@
         <input type="text" name="description" class="input" placeholder="Description" />
         <input type="number" name="story_points" class="input validator" required placeholder="Strory points"/>
         <input type="number" name="priority" class="input validator" required placeholder="Priority"/>
-        <input name="project_id" value="d659910f-919e-4068-bbeb-45fd3915ce5b" type="hidden" />
         
       <div class="modal-action">
               

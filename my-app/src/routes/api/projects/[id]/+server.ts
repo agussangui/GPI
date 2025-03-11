@@ -30,7 +30,7 @@ export async function PUT(event: RequestEvent) {
             .from('projects')
             .update({ name })
             .eq('id', id)
-            .eq('owner_id', user.id)  // Ensures only the owner can update
+            .eq('user_id', user.id)  // Ensures only the owner can update
             .select()
             .single();
 
@@ -68,7 +68,7 @@ export async function DELETE(event: RequestEvent) {
             .from('projects')
             .delete()
             .eq('id', id)
-            .eq('owner_id', user.id);  // Ensures only the owner can delete
+            .eq('user_id', user.id);  // Ensures only the owner can delete
 
         if (error) {
             throw new Error(error.message);
