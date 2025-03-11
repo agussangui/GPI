@@ -1,9 +1,12 @@
+import { SprintClass } from "./sprint";
+
 export interface Project {
     id: string;
     owner_id: string;
     name: string;
     code: string;
     created_at: string;
+
 }
 
 export class ProjectClass implements Project {
@@ -30,4 +33,5 @@ export class ProjectClass implements Project {
                 )
         );
     }
+
 }
