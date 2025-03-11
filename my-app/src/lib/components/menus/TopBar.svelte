@@ -2,24 +2,30 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { userStore } from '$stores/userStore';
-  
+	import AddProjectModal from '$lib/components/projects/AddProjectModal.svelte';
+
 	let currentUser = {
 	  avatar: '/images/avatar.png'
 	};
-  
+	let showModal = false;
+
+	function openModal() {
+	  showModal = true;
+	}
+
 	function isRouteActive(path: string): boolean {
 	  return page.url.pathname === path;
 	}
-  
+
 	async function handleLogout(event: Event): Promise<void> {
 	  event.preventDefault();
 	
 	  const response: Response = await fetch('/api/logout', {
 		method: 'POST',
 	  });
-  
+
 	  const result = await response.json();
-  
+
 	  if (response.ok) {
 		alert('Logout successful');
 		userStore.set({ authUser: null, session: null });
@@ -28,9 +34,9 @@
 		alert('Error logging out: ' + result.error);
 	  }
 	}
-  </script>
-  
-  <header class="top-bar">
+</script>
+
+<header class="top-bar">
 	<div class="top-bar__left">
 	  <a class="logo" href="/projects">
 		<img src="/images/logo.svg" alt="Logo" class="logo__image" />
@@ -40,21 +46,22 @@
 		  <li class="flex">
 			<a href="/projects" class="main-nav__link {isRouteActive('/') ? 'main-nav__link--active' : ''}">Projects</a>
 		  </li>
-		<li >
-			<a href="/projects" class="main-nav__link"><button class="btn btn-white	opacity-40">Create new</button></a>
-		  </li> 
+		  <li>
+			<button class="btn btn-white opacity-40" on:click={openModal}>Create new</button>
+		  </li>
 		</ul>
 	  </nav>
 	</div>
 	<div class="top-bar__right">
-	  <!-- <a href="/profile" class="user-avatar">
-		<img src={currentUser.avatar} alt="User avatar" />		  
-	  </a> -->
 	  <button class="logout-button" on:click={handleLogout}>Logout</button>
 	</div>
-  </header>
-  
-  <style lang="scss">
+</header>
+
+{#if showModal}
+  <AddProjectModal bind:showModal />
+{/if}
+
+<style lang="scss">
 	.top-bar {
 	  display: flex;
 	  justify-content: space-between;
@@ -113,19 +120,6 @@
 	  }
 	}
   
-	.user-avatar {
-	  width: 52px;
-	  height: 52px;
-	  border-radius: 50%;
-	  overflow: hidden;
-  
-	  img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	  }
-	}
-  
 	.logout-button {
 	  background-color: #007bff;
 	  color: #fff;
@@ -140,5 +134,4 @@
 		background-color: #0056b3;
 	  }
 	}
-  </style>
-  
+</style>

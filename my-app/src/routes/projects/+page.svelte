@@ -39,7 +39,10 @@
         goto(`/projects/${projectId}/backlog`);
     }
 
-    onMount(getProjects);
+    onMount( () => {
+        userId = $userStore.authUser?.id ?? null;
+        getProjects();
+    });
 </script>
 
 <style>
