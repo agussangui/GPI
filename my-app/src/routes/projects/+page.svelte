@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     import ProjectsLayout from "$lib/layouts/ProjectsLayout.svelte";
     import { supabase } from '$lib/supabase';
-    import { ProjectClass } from '../api/models/Project';
+    import { ProjectClass } from '$models/project';
     import { goto } from '$app/navigation';
 
     let error: Error | null = null;

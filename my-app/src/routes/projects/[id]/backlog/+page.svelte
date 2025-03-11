@@ -2,7 +2,7 @@
 	import DashboardLayout from '$lib/layouts/DashboardLayout.svelte';
   import { onMount } from 'svelte';
   import UserStoryList from '$lib/components/userStory/userStoryList.svelte';
-  import { UserStoryClass } from '../../../api/models/UserStory.ts';
+  import { UserStoryClass } from '$models/userStory'
   import { page } from '$app/state';
 
   let error: Error | null = null;
