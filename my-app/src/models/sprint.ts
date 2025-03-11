@@ -1,9 +1,9 @@
-import { StatusEnum } from "./statusEnum";
+import { SprintStatusEnum } from "./sprintStatusEnum";
 export interface SprintInterface {
     id: string;
     project_id: string;
     name: string;
-    status_id: StatusEnum;
+    status_id: SprintStatusEnum;
     start_date: Date;
     end_date: Date;
 
@@ -16,7 +16,7 @@ export class SprintClass implements SprintInterface {
     public id: string,
     public project_id: string,
     public name: string,
-    public status_id: StatusEnum,
+    public status_id: SprintStatusEnum,
     public start_date: Date,
     public end_date: Date,
   ) {}
@@ -41,7 +41,7 @@ export class SprintClass implements SprintInterface {
   }
 
   getStatus(): string {
-      return StatusEnum[this.status_id];
+      return SprintStatusEnum[this.status_id];
   }
 
 }

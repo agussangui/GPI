@@ -1,4 +1,4 @@
-import { StatusEnum } from '$models/statusEnum'
+import { UserStoryStatusEnum } from '$models/userStoryStatusEnum'
 
 export interface UserStoryInterface {
     id: string; // uuid
@@ -51,7 +51,7 @@ export class UserStoryClass implements UserStoryInterface {
   }
 
   getStatus(): string {
-      return StatusEnum[this.status_id];
+      return UserStoryStatusEnum[this.status_id];
   }
 
 }
