@@ -11,7 +11,8 @@ const config = {
 		alias: {
 			$components: './src/components',
 			$stores: './src/stores',
-			$models: './src/models'
+			$models: './src/models',
+			$services: './src/services',
 		},
 		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
 		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.

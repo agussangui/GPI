@@ -2,39 +2,32 @@
 	import DashboardLayout from '$lib/layouts/DashboardLayout.svelte';
   import { onMount } from 'svelte';
   import UserStoryList from '$lib/components/userStory/userStoryList.svelte';
-  import { UserStoryClass } from '../../../api/models/UserStory.ts';
+  import { UserStoryClass } from '$models/userStory'
   import { page } from '$app/state';
+  import { getBacklog, getCurrentSprintStoriesByProjectId } from '$services/projectService';
 
   let error: Error | null = null;
   let loading = true;
   let backlog: UserStoryClass[] = [];
   let projectId: string;
+  let currentSprint: UserStoryClass[] = [];
+  let sprintId: string | null = null;
 
-  async function getBacklog(projectId: string) {
-    loading = true;
-    error = null;
-
-    try {
-      const response = await fetch(`/api/projects/${projectId}/user_stories`);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      backlog = UserStoryClass.getUserStoriesFromJson(await response.json());
-      console.log('Fetched user stories:', backlog);
-    } catch (err) {
-      error = err instanceof Error ? err : new Error('An unknown error occurred');
-    } finally {
-      loading = false;
-    }
-  }
-
+  
   onMount(() => {
     if (page.params) {
             projectId = page.params.id;
         }
-    getBacklog(projectId);
+    getBacklog(projectId).then(bk => backlog=bk? bk : []).catch(e => error=e)
+    if ( !error){
+      getCurrentSprintStoriesByProjectId(projectId)
+      .then( us => {
+        currentSprint=us? us : [];
+        if (currentSprint.length > 0)
+          sprintId = currentSprint[0].sprint_id;
+      })
+      .catch(e => error=e).finally(() =>loading=false);
+    }
   });
 </script>
 
@@ -44,6 +37,7 @@
   {:else if error}
     <p style="color: red;">Error: {error.message}</p>
   {:else} 
-    <UserStoryList backlog={backlog}/>
+    <UserStoryList userStoryList={currentSprint} sprintId={sprintId}/>
+    <UserStoryList userStoryList={backlog} sprintId={null}/>
   {/if}
 </DashboardLayout>

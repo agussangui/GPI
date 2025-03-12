@@ -1,20 +1,26 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import ProjectsLayout from "$lib/layouts/ProjectsLayout.svelte";
-    import { supabase } from '$lib/supabase';
-    import { ProjectClass } from '../api/models/Project';
+    import { ProjectClass } from '$models/project';
     import { goto } from '$app/navigation';
+    import { userStore } from '$stores/userStore';
 
     let error: Error | null = null;
     let projects: ProjectClass[] = [];
     let loading = true;
+    let userId: string | null = $userStore.authUser?.id ?? null;
 
     async function getProjects() {
-        loading = true;
-        error = null;
+        if (!userId) {
+            console.error("User ID is missing!");
+            return;
+        }
 
         try {
-            const response = await fetch(`/api/users/657a3793-a55c-41c2-b087-539c1e263dc9/projects`);
+            loading = true;
+            error = null;
+
+            const response = await fetch(`/api/users/${userId}/projects`);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -33,7 +39,10 @@
         goto(`/projects/${projectId}/backlog`);
     }
 
-    onMount(getProjects);
+    onMount( () => {
+        userId = $userStore.authUser?.id ?? null;
+        getProjects();
+    });
 </script>
 
 <style>

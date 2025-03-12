@@ -9,6 +9,10 @@ const config = {
   plugins: [require('daisyui')],
   daisyui: {
     themes: [
+      'emerald',
+   'cupcake',
+   'retro',
+   'cyberpunk',
       {
         "figma": {
           "primary": "oklch(65% 0.25 220)",

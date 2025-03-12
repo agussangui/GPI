@@ -1,58 +1,67 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-  
+	import { userStore } from '$stores/userStore';
+	import AddProjectModal from '$lib/components/projects/AddProjectModal.svelte';
+
 	let currentUser = {
 	  avatar: '/images/avatar.png'
 	};
-  
+	let showModal = false;
+
+	function openModal() {
+	  showModal = true;
+	}
+
 	function isRouteActive(path: string): boolean {
 	  return page.url.pathname === path;
 	}
-  
+
 	async function handleLogout(event: Event): Promise<void> {
 	  event.preventDefault();
 	
 	  const response: Response = await fetch('/api/logout', {
 		method: 'POST',
 	  });
-  
+
 	  const result = await response.json();
-  
+
 	  if (response.ok) {
 		alert('Logout successful');
+		userStore.set({ authUser: null, session: null });
 		goto('/login');
 	  } else {
 		alert('Error logging out: ' + result.error);
 	  }
 	}
-  </script>
-  
-  <header class="top-bar">
+</script>
+
+<header class="top-bar">
 	<div class="top-bar__left">
 	  <a class="logo" href="/projects">
 		<img src="/images/logo.svg" alt="Logo" class="logo__image" />
 	  </a>
-	  <nav class="main-nav">
+	  <nav class="main-nav text-base">
 		<ul class="main-nav__list">
-		  <li>
+		  <li class="flex">
 			<a href="/projects" class="main-nav__link {isRouteActive('/') ? 'main-nav__link--active' : ''}">Projects</a>
 		  </li>
-		  <!-- <li>
-			<a href="/" on:click={() => alert('Create new clicked')} class="main-nav__link">Create new</a>
-		  </li> -->
+		  <li>
+			<button class="btn btn-white opacity-40" on:click={openModal}>Create new</button>
+		  </li>
 		</ul>
 	  </nav>
 	</div>
 	<div class="top-bar__right">
-	  <!-- <a href="/profile" class="user-avatar">
-		<img src={currentUser.avatar} alt="User avatar" />		  
-	  </a> -->
 	  <button class="logout-button" on:click={handleLogout}>Logout</button>
 	</div>
-  </header>
-  
-  <style lang="scss">
+</header>
+
+{#if showModal}
+  <AddProjectModal bind:showModal />
+{/if}
+
+<style lang="scss">
 	.top-bar {
 	  display: flex;
 	  justify-content: space-between;
@@ -98,7 +107,6 @@
 		cursor: pointer;
 		text-decoration: none;
 		color: var(--text-color);
-		font-size: 20px;
 		padding: 0.5rem 0;
 		position: relative;
   
@@ -109,19 +117,6 @@
 		&--active {
 		  font-weight: bold;
 		}
-	  }
-	}
-  
-	.user-avatar {
-	  width: 52px;
-	  height: 52px;
-	  border-radius: 50%;
-	  overflow: hidden;
-  
-	  img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
 	  }
 	}
   
@@ -139,5 +134,4 @@
 		background-color: #0056b3;
 	  }
 	}
-  </style>
-  
+</style>

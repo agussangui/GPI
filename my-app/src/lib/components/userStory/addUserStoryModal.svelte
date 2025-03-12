@@ -1,27 +1,31 @@
 <script lang="ts">
-	import type {UserStoryInterface} from "../../../routes/api/models/UserStory.ts";
-    import { POST } from "../../../routes/api/user_stories/+server.ts";
+	import type {UserStoryInterface} from "$models/userStory";
     import CloseBtn from "../icons/CloseBtn.svelte";
     import ErrorToast from "../alerts/errorToast.svelte";
+    import { page } from '$app/state';
+    import { error, type RequestEvent } from '@sveltejs/kit';
+    import { onMount } from "svelte";
+	import { UserStoryStatusEnum } from "$models/userStoryStatusEnum.ts";
 
     export let showModal :boolean;
+    export let sprintId :string;
     let newUserStory: UserStoryInterface;
     let errorToaster : boolean = false;
-
-    import { error, type RequestEvent } from '@sveltejs/kit';
+    let projectId: string;   
 
     async function submitForm(event: SubmitEvent) {
         event.preventDefault();
-        const form = event.currentTarget as HTMLFormElement; // ✅ Usa `currentTarget` 
-        const formData = new FormData(form); // ✅ Ahora formData funciona correctamente
+        const form = event.currentTarget as HTMLFormElement; 
+        const formData = new FormData(form); 
 
         const jsonData = {
-            project_id: formData.get('project_id') as string, // 👈 Asegura que sea string
-            sprint_id: formData.get('sprint_id') || null, // 👈 Si no existe, asigna null
+            project_id: projectId,
+            sprint_id: sprintId, 
             title: formData.get('title') as string,
             description: formData.get('description') || null,
-            priority: Number(formData.get('priority')), // 👈 Convierte a número
-            story_points: Number(formData.get('story_points')) || null, // 👈 Convierte a número
+            priority: Number(formData.get('priority')), 
+            status_id: sprintId? UserStoryStatusEnum.todo : UserStoryStatusEnum.backlog,
+            story_points: Number(formData.get('story_points')) || null, 
         };
 
         try {
@@ -39,6 +43,12 @@
         console.error('❌ Error en la petición:', error);
         }
     }
+
+    onMount(()=>{
+      if (page.params) {
+            projectId = page.params.id;
+        }
+    })
 </script>
 
 <div class="modal" data-theme="light" class:modal-open={showModal}>
@@ -52,10 +62,9 @@
         <input type="text" name="description" class="input" placeholder="Description" />
         <input type="number" name="story_points" class="input validator" required placeholder="Strory points"/>
         <input type="number" name="priority" class="input validator" required placeholder="Priority"/>
-        <input name="project_id" value="d659910f-919e-4068-bbeb-45fd3915ce5b" type="hidden" />
         
       <div class="modal-action">
-              <!-- 🔵 set false on click -->
+              
         <button class="btn" onclick={()=> showModal=false}>Add</button>
       </div>
       </form>
