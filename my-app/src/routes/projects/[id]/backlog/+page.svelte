@@ -6,16 +6,16 @@
   import { UserStoryClass } from '$models/userStory'
   import { page } from '$app/state';
 	import type { SprintClass } from '$models/sprint';
-  import { getCurrentSprint } from '$services/projectService';
+  import { getCurrentSprint, getCurrentSprintStories, getCurrentSprintStoriesByProjectId } from '$services/projectService';
 
   let error: Error | null = null;
   let loading = true;
   let backlog: UserStoryClass[] = [];
   let projectId: string;
-  let currentSprint: SprintClass | null = null;
+  let currentSprint: UserStoryClass[] = [];
+  let sprintId: string | null = null;
 
   async function getBacklog(projectId: string) {
-    loading = true;
 
     try {
       const response = await fetch(`/api/projects/${projectId}/user_stories`);
@@ -28,8 +28,6 @@
       console.log('Fetched user stories:', backlog);
     } catch (err) {
       error = err instanceof Error ? err : new Error('An unknown error occurred');
-    } finally {
-      loading = false;
     }
   }
 
@@ -39,9 +37,7 @@
             projectId = page.params.id;
         }
     getBacklog(projectId);
-    getCurrentSprint(projectId).then(s => console.log(s)).catch(e => error=e)
-    //console.log(currentSprint)
-    loading = true;
+    getCurrentSprintStoriesByProjectId(projectId).then(us => currentSprint=us? us : []).catch(e => error=e).finally(() =>loading=false);
   });
 </script>
 

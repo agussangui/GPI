@@ -2,28 +2,26 @@ import { json, type RequestEvent } from '@sveltejs/kit';
 import { supabase } from '$lib/supabase';
 
 export async function GET({ params }: RequestEvent) {
-    const project_id = params.id;
+    const sprint_id = params.id;
 
-    if (!project_id) {
-        return json({ error: 'Project ID is required' }, { status: 400 });
+    if (!sprint_id) {
+        return json({ error: 'Sprint ID is required' }, { status: 400 });
     }
 
     try {
-        const now = new Date().toISOString();
         const { data, error } = await supabase
-            .from('sprints')
-            .select('id')
-            .eq('project_id', project_id)
-            .lte('start_date', now)
-            .gte('end_date', now ).single()
+            .from('user_stories')
+            .select('*')
+            .eq('sprint_id', sprint_id);
 
         if (error) {
             throw new Error(error.message);
         }
-    
-        return json({ sprint: data }, { status: 200 });
+
+        return json({ user_stories: data }, { status: 200 });
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
         return json({ error: errorMessage }, { status: 500 });
     }
 }
+

@@ -30,10 +30,11 @@ export class UserStoryClass implements UserStoryInterface {
 
 
   static getUserStoriesFromJson(json: any) {
+    
     if (!json.user_stories || !Array.isArray(json.user_stories)) {
         throw new Error("Invalid JSON format");
       }
-    
+      
       return json.user_stories.map(
         (story: any) =>
           new UserStoryClass (

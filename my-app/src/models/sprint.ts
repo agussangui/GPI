@@ -23,7 +23,7 @@ export class SprintClass implements SprintInterface {
 
 
   static getSprintFromJson(json: any) {
-    if (!json.sprint || !Array.isArray(json.user_stories)) {
+    if (!json.sprint) {
         throw new Error("Invalid JSON format");
       }
     
@@ -38,6 +38,15 @@ export class SprintClass implements SprintInterface {
             sprint.end_date
           )
       );
+    }
+    
+    
+    static getSprintIdFromJson(json: any) : string {
+        if (json.sprint.id ==undefined) {
+            throw new Error("Invalid JSON format");
+          }
+        
+        return json.sprint.id;
   }
 
   getStatus(): string {

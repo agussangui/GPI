@@ -24,3 +24,4 @@ export async function GET({ params }: RequestEvent) {
         return json({ error: errorMessage }, { status: 500 });
     }
 }
+
