@@ -6,7 +6,7 @@ export async function POST(event: RequestEvent) {
 
     try {
         
-        const { project_id, sprint_id, title, description, priority, story_points } = await request.json();
+        const { project_id, sprint_id, title, description, priority, story_points, status_id } = await request.json();
         
         if (!project_id || !title || priority === undefined) {
             return json({ error: 'Project ID, title, and priority are required' }, { status: 400 });
@@ -22,6 +22,7 @@ export async function POST(event: RequestEvent) {
                     description: description || null,
                     priority,
                     story_points: story_points || null,
+                    status_id
                 }
             ])
             .select()

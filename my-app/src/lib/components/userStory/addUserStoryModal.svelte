@@ -5,8 +5,10 @@
     import { page } from '$app/state';
     import { error, type RequestEvent } from '@sveltejs/kit';
     import { onMount } from "svelte";
+	import { UserStoryStatusEnum } from "$models/userStoryStatusEnum.ts";
 
     export let showModal :boolean;
+    export let sprintId :string;
     let newUserStory: UserStoryInterface;
     let errorToaster : boolean = false;
     let projectId: string;   
@@ -18,10 +20,11 @@
 
         const jsonData = {
             project_id: projectId,
-            sprint_id: formData.get('sprint_id') || null, 
+            sprint_id: sprintId, 
             title: formData.get('title') as string,
             description: formData.get('description') || null,
             priority: Number(formData.get('priority')), 
+            status_id: sprintId? UserStoryStatusEnum.todo : UserStoryStatusEnum.backlog,
             story_points: Number(formData.get('story_points')) || null, 
         };
 

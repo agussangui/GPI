@@ -2,17 +2,17 @@
     import UserStory from "./userStory.svelte";
     import AddUserStoryModal from "./addUserStoryModal.svelte";
     
-    let {userStoryList, isSprint} = $props()
+    let {userStoryList, sprintId} = $props()
     let {showModal} = $state(false);
     
 </script>
 
-    <AddUserStoryModal bind:showModal/>
+    <AddUserStoryModal bind:showModal sprintId={sprintId}/>
 
-<ul class="list bg-base-100 rounded-box mb-10 {isSprint? "shadow-2xl -shadow-spread-2":"shadow-md"}" data-theme={ isSprint? 'light':'winter'}>
+<ul class="list bg-base-100 rounded-box mb-10 {sprintId? "shadow-2xl -shadow-spread-2":"shadow-md"}" data-theme={ sprintId? 'light':'winter'}>
   
     <li class="p-4 pb-2 text-s opacity-60 tracking-wide font-bold">
-        { isSprint? 'Sprint':'Backlog'} </li>
+        { sprintId? 'Sprint':'Backlog'} </li>
     {#each userStoryList as b }
         <UserStory data={b} />     
     {/each }

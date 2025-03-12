@@ -14,15 +14,20 @@
   let sprintId: string | null = null;
 
   
-
-  
   onMount(() => {
     if (page.params) {
             projectId = page.params.id;
         }
     getBacklog(projectId).then(bk => backlog=bk? bk : []).catch(e => error=e)
-    if ( !error)
-      getCurrentSprintStoriesByProjectId(projectId).then(us => currentSprint=us? us : []).catch(e => error=e).finally(() =>loading=false);
+    if ( !error){
+      getCurrentSprintStoriesByProjectId(projectId)
+      .then( us => {
+        currentSprint=us? us : [];
+        if (currentSprint.length > 0)
+          sprintId = currentSprint[0].sprint_id;
+      })
+      .catch(e => error=e).finally(() =>loading=false);
+    }
   });
 </script>
 
@@ -32,7 +37,7 @@
   {:else if error}
     <p style="color: red;">Error: {error.message}</p>
   {:else} 
-    <UserStoryList userStoryList={currentSprint} isSprint={true}/>
-    <UserStoryList userStoryList={backlog} isSprint={false}/>
+    <UserStoryList userStoryList={currentSprint} sprintId={sprintId}/>
+    <UserStoryList userStoryList={backlog} sprintId={null}/>
   {/if}
 </DashboardLayout>

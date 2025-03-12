@@ -7,8 +7,8 @@ export async function GET({ params, url }: RequestEvent) {
     const status = UserStoryStatusEnum[ url.searchParams.get("status") as keyof typeof UserStoryStatusEnum]
     const sprint_id = url.searchParams.get("sprint_id") as string | null;
     
-    if (!project_id || status==undefined) {
-        return json({ error: 'Project ID and correct user stories status are required' }, { status: 400 });
+    if (!project_id) {
+        return json({ error: 'Project ID is required' }, { status: 400 });
     }
     let data, error
     try {
@@ -17,7 +17,7 @@ export async function GET({ params, url }: RequestEvent) {
             .from('user_stories')
             .select('*')
             .eq('sprint_id', sprint_id)
-            .neq('status', UserStoryStatusEnum.backlog)
+            .neq('status_id', UserStoryStatusEnum.backlog)
              );
         } else {
          ({ data, error } = await supabase

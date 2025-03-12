@@ -32,9 +32,9 @@ export async function getCurrentSprint(projectId: string) : Promise<string | nul
     }
 }
 
-export async function getCurrentSprintStories(sprintId: string) : Promise<UserStoryClass[] | null> {
+export async function getCurrentSprintStories(projectId:string, sprintId: string) : Promise<UserStoryClass[] | null> {
     try {
-      const response = await fetch(`/api/sprints/${sprintId}/user_stories`);
+      const response = await fetch(`/api/projects/${projectId}/user_stories?sprint_id=${sprintId}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -51,7 +51,7 @@ export async function getCurrentSprintStoriesByProjectId(projectId: string) : Pr
     try {
       const sprint_id = await getCurrentSprint(projectId)
       if (sprint_id !== null) 
-        return await getCurrentSprintStories(sprint_id);
+        return await getCurrentSprintStories(projectId,sprint_id);
       return []
     } catch (err) {
       const error = err instanceof Error ? err : new Error('An unknown error occurred');
