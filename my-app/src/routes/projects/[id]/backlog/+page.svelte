@@ -23,8 +23,7 @@
       getCurrentSprintStoriesByProjectId(projectId)
       .then( us => {
         currentSprint=us? us : [];
-        if (currentSprint.length > 0)
-          sprintId = currentSprint[0].sprint_id;
+        sprintId = (currentSprint.length > 0)? currentSprint[0].sprint_id : "hola";
       })
       .catch(e => error=e).finally(() =>loading=false);
     }
@@ -37,7 +36,7 @@
   {:else if error}
     <p style="color: red;">Error: {error.message}</p>
   {:else} 
-    <UserStoryList userStoryList={currentSprint} sprintId={sprintId}/>
-    <UserStoryList userStoryList={backlog} sprintId={null}/>
+    <UserStoryList userStoryList={currentSprint} sprintId={sprintId} isSprint={true}/>
+    <UserStoryList userStoryList={backlog} sprintId={null} isSprint={false}/>
   {/if}
 </DashboardLayout>
