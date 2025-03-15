@@ -10,15 +10,17 @@ export async function PUT(event: RequestEvent) {
     }
 
     try {
-        const { title, description, status, points } = await request.json();
+        const {title, description, sprint_id } = await request.json();
 
-        if (!title) {
-            return json({ error: 'User story title is required' }, { status: 400 });
-        }
+        const updatedFields: Record<string, any> = {};
+        if (title) updatedFields.title = title;
+         if (description) updatedFields.description = description;
+        //if (status) updatedFields.status = status;
+        if (sprint_id) updatedFields.sprint_id = sprint_id;
 
         const { data, error } = await supabase
             .from('user_stories')
-            .update({ title, description, status, points })
+            .update(updatedFields)
             .eq('id', id)
             .select()
             .single();
