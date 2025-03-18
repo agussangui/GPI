@@ -2,68 +2,116 @@ import { json, type RequestEvent } from '@sveltejs/kit';
 import { supabase } from '$lib/supabase';
 import { SprintStatusEnum } from '$models/sprintStatusEnum';
 
-
-
-export async function POST(event: RequestEvent) {
+export async function GET({ url }: RequestEvent) {
     try {
+        // Authenticate user
         const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
         if (authError || !user) {
-            return json({ error: 'Unauthorized' }, { status: 401 });
+            return json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
+        }
+        
+        const projectId = url.searchParams.get('project_id');
+        const afterDate = url.searchParams.get('after_date');
+        const beforeDate = url.searchParams.get('before_date');
+        const currentDate = url.searchParams.get('current_date');
+
+        if (!projectId) {
+            return json({ error: 'Project ID is required' }, { status: 400 });
         }
 
-        const { project_id, name, start_date, end_date } = await event.request.json();
-        if (!project_id || !name || !start_date || !end_date) {
-            return json({ error: 'Project ID, name, start date, and end date are required' }, { status: 400 });
-        }
-
-        const { data, error } = await supabase
+        let query = supabase
             .from('sprints')
-            .insert([{ project_id, name, start_date, end_date }])
-            .select()
-            .single();
+            .select('*')
+            .eq('project_id', projectId);
 
-        if (error) throw error;
+        // Filter sprints based on date parameters
+        if (afterDate) {
+            // Upcoming sprints: start_date is after current date
+            query = query.gt('start_date', afterDate);
+        } else if (beforeDate) {
+            // Past sprints: end_date is before current date
+            query = query.lt('end_date', beforeDate);
+        } else if (currentDate) {
+            // Current sprints: current date is between start_date and end_date
+            query = query
+                .lte('start_date', currentDate)
+                .gte('end_date', currentDate);
+        }
+        
+        // Order appropriately based on filter
+        if (afterDate) {
+            // For upcoming sprints, order by start date (ascending)
+            query = query.order('start_date', { ascending: true });
+        } else if (beforeDate) {
+            // For past sprints, order by end date (descending - most recently completed first)
+            query = query.order('end_date', { ascending: false });
+        } else {
+            // Default order by start date (descending)
+            query = query.order('start_date', { ascending: false });
+        }
+        
+        const { data, error } = await query;
 
-        return json({ project: data }, { status: 201 });
-    } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Internal Server Error';
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        return json({ project: data }, { status: 200 });
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
         return json({ error: errorMessage }, { status: 500 });
     }
 }
 
-
-export async function GET({ params, url }: RequestEvent) {
+export async function POST({ request }: RequestEvent) {
     try {
-  /*      const { data: { user }, error: authError } = await supabase.auth.getUser();
+        // Get authenticated user
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
         if (authError || !user) {
-            return json({ error: 'Unauthorized' }, { status: 401 });
+            console.error("Authentication error:", authError);
+            return json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
         }
-*/
-        const project_id = url.searchParams.get("project_id");
+        
+        const requestData = await request.json();
+        console.log("Sprint creation request data:", requestData);
+        
+        // Validate required fields
+        const { project_id, name, start_date, end_date } = requestData;
+        
         if (!project_id) {
-            return json({ error: 'Project ID is required' }, { status: 400 });
+            console.log("Missing project_id in request:", requestData);
+            return json({ 
+                error: 'Missing required field: project_id is required' 
+            }, { status: 400 });
         }
         
-        const statusParam = url.searchParams.get("status");
-        const statusEnumValue = statusParam && statusParam in SprintStatusEnum 
-        ? SprintStatusEnum[statusParam as keyof typeof SprintStatusEnum]
-        : undefined;
-        
-        let request = supabase.from('sprints')
-                    .select('*')
-                    .eq('project_id', project_id)
-                    .order('start_date', { ascending: true })
-        if ( statusEnumValue==SprintStatusEnum.todo ) {
-            const now = new Date().toISOString();
-            request = request.gt('start_date', now);
+        if (!name || !start_date || !end_date) {
+            return json({ 
+                error: 'Missing required fields: name, start_date, and end_date are required' 
+            }, { status: 400 });
         }
         
-        const { data, error } = await request;
-        if (error) throw error;
-
-        return json({ project: data }, { status: 201 });
-    } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Internal Server Error';
+        // Insert new sprint
+        const { data, error } = await supabase
+            .from('sprints')
+            .insert({
+                project_id,
+                name,
+                start_date,
+                end_date
+            })
+            .select()
+            .single();
+            
+        if (error) {
+            throw new Error(error.message);
+        }
+        
+        return json({ id: data.id }, { status: 201 });
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
         return json({ error: errorMessage }, { status: 500 });
     }
 }

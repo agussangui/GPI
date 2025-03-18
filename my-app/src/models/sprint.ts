@@ -3,7 +3,6 @@ export interface SprintInterface {
     id: string;
     project_id: string;
     name: string;
-    status_id: number;
     start_date: string;
     end_date: string;
     created_at: string;
@@ -17,10 +16,10 @@ export class SprintClass implements SprintInterface {
     public id: string,
     public project_id: string,
     public name: string,
-    public status_id: number,
     public start_date: string,
     public end_date: string,
-    public created_at: string
+    public created_at: string,
+    public status_id?: number // Keep for backward compatibility but mark as optional
   ) {}
 
 
@@ -35,17 +34,17 @@ export class SprintClass implements SprintInterface {
             sprint.id,
             sprint.project_id,
             sprint.name,
-            sprint.status_id,
             sprint.start_date,
             sprint.end_date,
-            sprint.created_at
+            sprint.created_at,
+            sprint.status_id
           )
       );
     }
     
     
     static getSprintIdFromJson(json: any) : string {
-        if (json.sprint.id ==undefined) {
+        if (json.sprint.id == undefined) {
             throw new Error("Invalid JSON format");
           }
         
@@ -64,17 +63,28 @@ export class SprintClass implements SprintInterface {
           sprint.id,
           sprint.project_id,
           sprint.name,
-          sprint.status_id,
           sprint.start_date,
           sprint.end_date,
-          sprint.created_at
+          sprint.created_at,
+          sprint.status_id
         )
     );
   }
   
 
   getStatus(): string {
-      return SprintStatusEnum[this.status_id];
+    // Determine status based on current date and sprint dates
+    const currentDate = new Date();
+    const startDate = new Date(this.start_date);
+    const endDate = new Date(this.end_date);
+    
+    if (currentDate < startDate) {
+      return 'Upcoming';
+    } else if (currentDate > endDate) {
+      return 'Completed';
+    } else {
+      return 'Current';
+    }
   }
 
 }

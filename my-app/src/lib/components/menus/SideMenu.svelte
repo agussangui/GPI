@@ -5,6 +5,7 @@
     import Board from '$lib/components/icons/Board.svelte';
     import Backlog from '$lib/components/icons/Backlog.svelte';
     import Timeline from '$lib/components/icons/Timeline.svelte';
+    import Sprint from '$lib/components/icons/Sprint.svelte';
     import AddUserStoryModal from '../userStory/addUserStoryModal.svelte';
 
     let projectId: string;
@@ -18,6 +19,7 @@
     // Dynamically generate menu items with correct hrefs based on projectId
     $: menuItems = [
         { id: 'insights', label: 'Insights', icon: Insights, href: `/projects/${projectId}/insights` },
+        { id: 'sprints', label: 'Sprints', icon: Sprint, href: `/projects/${projectId}/sprints` },
         { id: 'backlog', label: 'Backlog', icon: Backlog, href: `/projects/${projectId}/backlog` },
         { id: 'board', label: 'Board', icon: Board, href: `/projects/${projectId}/board` },
         { id: 'timeline', label: 'Timeline', icon: Timeline, href: `/projects/${projectId}/timeline` }
