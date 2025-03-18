@@ -6,6 +6,7 @@
   import { page } from '$app/state';
   import { getBacklog, getUpcomingSprints, getSprintStories } from '$services/projectService';
 	import type { SprintClass } from '$models/sprint';
+	import { sprintStore } from '$stores/sprintStore';
 
   let error: Error | null = null;
   let loading = true;
@@ -23,6 +24,7 @@
     getUpcomingSprints(projectId).then(
         s => {sprints=s? s : [];
         if (sprints.length > 0) {
+          sprintStore.set({currentSprintIdBacklogPage: sprints[0]})
           getSprintStories(projectId,sprints[0].id)
               .then( us => {  currentSprint=us? us : [];
                               sprintId = (currentSprint.length > 0)? currentSprint[0].sprint_id : "hola";
