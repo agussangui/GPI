@@ -2,16 +2,10 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { userStore } from '$stores/userStore';
-	import AddProjectModal from '$lib/components/projects/AddProjectModal.svelte';
 
 	let currentUser = {
 	  avatar: '/images/avatar.png'
 	};
-	let showModal = false;
-
-	function openModal() {
-	  showModal = true;
-	}
 
 	function isRouteActive(path: string): boolean {
 	  return page.url.pathname === path;
@@ -46,9 +40,6 @@
 		  <li class="flex">
 			<a href="/projects" class="main-nav__link {isRouteActive('/') ? 'main-nav__link--active' : ''}">Projects</a>
 		  </li>
-		  <li>
-			<button class="btn btn-white opacity-40" on:click={openModal}>Create new</button>
-		  </li>
 		</ul>
 	  </nav>
 	</div>
@@ -56,10 +47,6 @@
 	  <button class="logout-button" on:click={handleLogout}>Logout</button>
 	</div>
 </header>
-
-{#if showModal}
-  <AddProjectModal bind:showModal />
-{/if}
 
 <style lang="scss">
 	.top-bar {

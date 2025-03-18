@@ -2,46 +2,41 @@
     import CloseBtn from "../icons/CloseBtn.svelte";
     import ErrorToast from "../alerts/errorToast.svelte";
     import { ProjectClass } from "$models/project";
-	import { goto } from "$app/navigation";
 
-    export let showModal: boolean;
-
-    let projectName: string = '';
+    let {showModal = $bindable(false), projectId = '', projectName = '', onProjectDeleted = () => {}} = $props();
+    
+    let error: string | null = null;
     let errorToaster: boolean = false;
+    let isDeleting: boolean = false;
 
-    async function submitForm(event: SubmitEvent) {
-        event.preventDefault();
-
-        const form = event.currentTarget as HTMLFormElement;
-        const formData = new FormData(form);
-
-        const jsonData = {
-            name: formData.get('project_name') as string,
-        };
+    async function deleteProject() {
+        if (!projectId) {
+            error = "Project ID is missing";
+            errorToaster = true;
+            return;
+        }
 
         try {
-            const response: Response = await fetch('/api/projects', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(jsonData),
+            isDeleting = true;
+            const response = await fetch(`/api/projects/${projectId}`, {
+                method: 'DELETE',
             });
 
             const result = await response.json();
-            console.log('🔄 Server response:', result);
 
             if (!response.ok) {
-                throw new Error(result.error || 'Error creating project');
+                throw new Error(result.error || 'Error deleting project');
             }
 
+            // Close modal and notify parent component that project was deleted
             showModal = false;
-
-            const project = ProjectClass.getSingleProjectFromJson(result);
-            goto(`/projects/${project.id}/backlog`);
-
-
-        } catch (error) {
+            onProjectDeleted(projectId);
+        } catch (err) {
+            error = err instanceof Error ? err.message : 'An unknown error occurred';
             errorToaster = true;
-            console.error('❌ Error in request:', error);
+            console.error('Error deleting project:', error);
+        } finally {
+            isDeleting = false;
         }
     }
 </script>
@@ -50,33 +45,27 @@
     <div class="modal-box">
         <!-- Header with close button aligned to the right -->
         <div class="modal-header">
-            <h3 class="font-bold text-lg">Add New Project</h3>
+            <h3 class="font-bold text-lg">Delete Project</h3>
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div class="close-btn-container" on:click={() => showModal = false}>
                 <CloseBtn />
             </div>
         </div>
+        
+        <p class="py-4">Are you sure you want to delete project "{projectName}"? This action cannot be undone.</p>
 
-        <form id="form" class="fieldset" on:submit={submitForm}>
-            <input
-                type="text"
-                name="project_name"
-                class="input"
-                placeholder="Project Name"
-                bind:value={projectName}
-                required
-            />
-
-            <div class="modal-action">
-                <button class="btn" type="submit">Create project</button>
-            </div>
-        </form>
+        <div class="modal-action">
+            <button class="btn" on:click={() => showModal = false}>Cancel</button>
+            <button class="btn btn-error" on:click={deleteProject} disabled={isDeleting}>
+                {isDeleting ? 'Deleting...' : 'Delete Project'}
+            </button>
+        </div>
     </div>
 </div>
 
 {#if errorToaster}
-    <ErrorToast title="Error creating project" />
+    <ErrorToast title={error || "Error deleting project"} />
 {/if}
 
 <style lang="scss">
@@ -107,7 +96,6 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1rem;
-        text-align: left;
     }
     
     .close-btn-container {
@@ -117,6 +105,7 @@
     .modal-action {
         display: flex;
         justify-content: flex-end;
+        gap: 0.5rem;
         margin-top: 1rem;
     }
 
@@ -133,11 +122,16 @@
         background-color: #0056b3;
     }
 
-    .input {
-        width: 100%;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+    .btn-error {
+        background-color: #dc3545;
     }
-</style>
+
+    .btn-error:hover {
+        background-color: #bd2130;
+    }
+
+    .btn:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+</style> 
