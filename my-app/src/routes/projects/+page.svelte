@@ -10,7 +10,15 @@
     let error: Error | null = null;
     let projects: ProjectClass[] = [];
     let loading = true;
-    let userId: string | null = $userStore.authUser?.id ?? null;
+    let userId: string | null = null;
+    
+    // Make userId reactive to changes in the userStore
+    $: userId = $userStore.authUser?.id ?? null;
+    
+    // Reactive statement to watch for changes in userId
+    $: if (userId) {
+        getProjects();
+    }
     
     // Variables for project deletion
     let showDeleteModal = false;
