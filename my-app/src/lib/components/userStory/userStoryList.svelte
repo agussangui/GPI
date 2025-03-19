@@ -10,7 +10,7 @@
 
 <div class="grid gap-6">
   <ul class="list bg-base-100 rounded-box shadow-md p-4" data-theme={sprintId === null ? 'winter' : 'light'}>
-    <li class="text-center font-bold text-lg mb-4">{sprintId === null ? 'Backlog' : 'Current Sprint'}</li>
+    <li class="text-center font-bold text-lg mb-4">{sprintId === null ? 'Backlog' : 'Upcoming Sprint'}</li>
     
     {#each userStoryList as userStory}
         <UserStory 
