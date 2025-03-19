@@ -10,13 +10,22 @@ export async function PUT(event: RequestEvent) {
     }
 
     try {
-        const {title, description, sprint_id } = await request.json();
-
+        const { title, description, sprint_id, status_id, priority, story_points } = await request.json();
         const updatedFields: Record<string, any> = {};
-        if (title) updatedFields.title = title;
-         if (description) updatedFields.description = description;
-        //if (status) updatedFields.status = status;
-        if (sprint_id) updatedFields.sprint_id = sprint_id;
+
+        if (title !== undefined) updatedFields.title = title;
+        if (description !== undefined) updatedFields.description = description;
+        if (sprint_id !== undefined) updatedFields.sprint_id = sprint_id;
+        if (priority !== undefined) updatedFields.priority = priority;
+        if (story_points !== undefined) updatedFields.story_points = story_points;
+
+        if (status_id !== undefined) {
+            updatedFields.status_id = `${status_id}`;
+        }
+
+        if (Object.keys(updatedFields).length === 0) {
+            return json({ error: 'No valid fields to update' }, { status: 400 });
+        }
 
         const { data, error } = await supabase
             .from('user_stories')
@@ -24,6 +33,7 @@ export async function PUT(event: RequestEvent) {
             .eq('id', id)
             .select()
             .single();
+
 
         if (error) {
             throw new Error(error.message);

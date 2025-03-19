@@ -1,29 +1,38 @@
-<script>
+<script lang="ts">
     import UserStory from "./userStory.svelte";
     import AddUserStoryModal from "./addUserStoryModal.svelte";
     
-    let {userStoryList, sprintId, isSprint} = $props()
-    let {showModal} = $state(false);
-    
+    let { userStoryList, sprintId, addUserStoryToSprint, addUserStoryToBacklog, removeUserStory } = $props();
+    let showModal: boolean = false;
 </script>
 
-    <AddUserStoryModal bind:showModal/>
+<AddUserStoryModal bind:showModal />
 
-<ul class="list bg-base-100 rounded-box mb-10 {isSprint? "shadow-2xl -shadow-spread-2":"shadow-md"}" data-theme={ isSprint? 'light':'winter'}>
+<div class="grid gap-6">
+  <ul class="list bg-base-100 rounded-box shadow-md p-4" data-theme={sprintId === null ? 'winter' : 'light'}>
+    <li class="text-center font-bold text-lg mb-4">{sprintId === null ? 'Backlog' : 'Current Sprint'}</li>
+    
+    {#each userStoryList as userStory}
+        <UserStory 
+        userStory={userStory} 
+        addUserStoryToSprint={addUserStoryToSprint}
+        addUserStoryToBacklog={addUserStoryToBacklog}
+        removeUserStory={removeUserStory}
+        />
+    {/each}
   
-    <li class="p-4 pb-2 text-s opacity-60 tracking-wide font-bold">
-        { isSprint? 'Sprint':'Backlog'} </li>
-    {#each userStoryList as b }
-        <UserStory data={b} />     
-    {/each }
     {#if userStoryList.length === 0}
-        <li class="list-row ">
-        <span class="text-gray-400 text-sm m-auto">No user stories</span>
-        </li> 
+      <li class="list-row text-center text-gray-400">
+        No user stories
+      </li>
     {/if}
-    {#if !isSprint }
-        <li class="m-2"><button class="btn btn-ghost btn-sm bg-info w-full"  onclick={()=>showModal = true}>
-        Add new user story +</button></li>
+  
+    {#if sprintId === null}
+      <li class="text-center mt-4">
+        <button class="btn btn-ghost btn-sm bg-info w-full" onclick={() => showModal = true}>
+          Add new user story +
+        </button>
+      </li>
     {/if}
-</ul>
-
+  </ul>
+</div>

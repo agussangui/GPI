@@ -10,7 +10,6 @@ export async function PUT(event: RequestEvent) {
     }
 
     try {
-        // Get the current session and user info
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
         if (sessionError || !session?.user) {
@@ -25,12 +24,11 @@ export async function PUT(event: RequestEvent) {
             return json({ error: 'Project name is required' }, { status: 400 });
         }
 
-        // Update the project; RLS will ensure the user is the owner
         const { data, error } = await supabase
             .from('projects')
             .update({ name })
             .eq('id', id)
-            .eq('user_id', user.id)  // Ensures only the owner can update
+            .eq('user_id', user.id)
             .select()
             .single();
 

@@ -18,11 +18,11 @@
 
     // Dynamically generate menu items with correct hrefs based on projectId
     $: menuItems = [
-        { id: 'insights', label: 'Insights', icon: Insights, href: `/projects/${projectId}/insights` },
-        { id: 'sprints', label: 'Sprints', icon: Sprint, href: `/projects/${projectId}/sprints` },
+        // { id: 'insights', label: 'Insights', icon: Insights, href: `/projects/${projectId}/insights` },
         { id: 'backlog', label: 'Backlog', icon: Backlog, href: `/projects/${projectId}/backlog` },
         { id: 'board', label: 'Board', icon: Board, href: `/projects/${projectId}/board` },
-        { id: 'timeline', label: 'Timeline', icon: Timeline, href: `/projects/${projectId}/timeline` }
+        { id: 'sprints', label: 'Sprints', icon: Sprint, href: `/projects/${projectId}/sprints` },
+        // { id: 'timeline', label: 'Timeline', icon: Timeline, href: `/projects/${projectId}/timeline` }
     ];
 
     // Check if the route is active
@@ -56,14 +56,6 @@
                 {/each}
             </ul>
         </nav>
-
-        <div class="new-issue-container">
-            <button
-                class="new-issue-btn"
-                onclick={() => (showModal = true)}>
-                Create issue
-            </button>
-        </div>
     </div>
 </aside>
 
@@ -73,7 +65,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 0 2rem;
+        padding: 0 1rem;
         margin-top: -8rem;
     }
 

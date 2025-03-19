@@ -13,7 +13,7 @@
     };
 
     const navigateToSprint = (sprintId: string) => {
-        const url = `/projects/${page.params.id}/board/${sprintId}`;
+        const url = `/projects/${page.params.id}/board`;
         window.location.href = url;
     };
 </script>
