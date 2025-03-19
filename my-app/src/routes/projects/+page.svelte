@@ -44,7 +44,6 @@
             }
 
             projects = ProjectClass.getProjectsFromJson(await response.json());
-            console.log('Fetched projects:', projects);
         } catch (err) {
             error = err instanceof Error ? err : new Error('An unknown error occurred');
         } finally {

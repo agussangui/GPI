@@ -26,21 +26,18 @@ export class SprintClass implements SprintInterface {
   static getSprintFromJson(json: any) {
     if (!json.sprint) {
         throw new Error("Invalid JSON format");
-      }
-    
-      return json.sprint.map(
-        (sprint: any) =>
-          new SprintClass (
-            sprint.id,
-            sprint.project_id,
-            sprint.name,
-            sprint.start_date,
-            sprint.end_date,
-            sprint.created_at,
-            sprint.status_id
-          )
-      );
     }
+    
+    return new SprintClass(
+      json.sprint.id,
+      json.sprint.project_id,
+      json.sprint.name,
+      json.sprint.start_date,
+      json.sprint.end_date,
+      json.sprint.created_at,
+      json.sprint.status_id
+    );
+  }
     
     
     static getSprintIdFromJson(json: any) : string {

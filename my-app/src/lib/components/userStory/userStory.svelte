@@ -1,53 +1,45 @@
 <script lang="ts">
-    import UserIcon from "../icons/User.svelte";
-    import Delete from "../icons/Delete.svelte";
-    import Add from "../icons/Add.svelte";
-	import { sprintStore } from "$stores/sprintStore";
-	import { UserStoryStatusEnum } from "$models/userStoryStatusEnum";
-    const {data} = $props()
-    let isDeleted:boolean = $state(false);
+  import UserIcon from "../icons/User.svelte";
+  import Delete from "../icons/Delete.svelte";
+  import Add from "../icons/Add.svelte";
+  import Minus from "../icons/Minus.svelte";
+  import { UserStoryStatusEnum } from "$models/userStoryStatusEnum";
+  
+  let { userStory, addUserStoryToSprint, addUserStoryToBacklog, removeUserStory } = $props();
 
-    const currentSprint = $derived(sprintStore);
-
-    async function deleteUserStory(event: Event) {
-      event.preventDefault();
-      try {
-        const response = await fetch('/api/user_stories/'+data.id, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-        }); 
-
-        } catch (error) {
-          console.error('❌ Error :', error);
-          return;
-        } 
-        isDeleted = true;
-        
-    }
+  let isDeleted: boolean = $state(false);
+  
 </script>
-{#if !isDeleted} 
-<li class="list-row px-5">
-        
-      <div class="ml-5">
-        <div>{data.title}</div>
-      </div>
-      <div class="badge badge-soft badge-primary mr-25">{data.getStatus()}</div>
-      <div class="font-semibold">{data.story_points}</div>
-      <div class="mr-5">{#if data.owners == null || data.owners.size == 0}<UserIcon />{ /if }</div>
-      <!-- change popover-1 and --anchor-1 names. Use unique names for each dropdown -->
-      {#if data.status_id==UserStoryStatusEnum.backlog}
-        <div>
-          <button class="btn btn-circle btn-ghost pb-4" popovertarget="popover-1" style="anchor-name:--anchor-1" onclick={(e) => deleteUserStory(e)}>
-              <Add/>
-          </button>  
-        </div>
-      {/if}
-      <div>
-        <button class="btn btn-circle btn-ghost pb-4" popovertarget="popover-1" style="anchor-name:--anchor-1" onclick={(e) => deleteUserStory(e)}>
-            <Delete/>
-        </button>
-        
-      </div>
-</li>   
-{/if}
+
+{#if !isDeleted}
+  <li class="list-row flex items-center justify-between px-5 py-4 border-b border-gray-200 hover:bg-gray-50">
+    <div class="flex items-center space-x-4">
+      <div class="font-semibold">{userStory.title}</div>
+      <div class="badge badge-soft badge-primary">{userStory.getStatus()}</div>
+      <div class="text-gray-600">{userStory.story_points} SP</div>
+    </div>
     
+    <div class="flex items-center space-x-2">
+      {#if !userStory.owners?.size}
+        <UserIcon/>
+      {/if}
+      
+      {#if userStory.status_id == UserStoryStatusEnum.backlog}
+        <button class="btn btn-circle btn-ghost p-2 text-gray-600 hover:bg-info" onclick={() => addUserStoryToSprint(userStory)}>
+          <Add/>
+        </button>
+      {/if }
+      
+      {#if userStory.status_id != UserStoryStatusEnum.backlog}
+        <button class="btn btn-circle btn-ghost p-2 text-gray-600 hover:bg-warning" onclick={() => addUserStoryToBacklog(userStory)}>
+          <Minus/>
+        </button>
+      {/if }
+
+      <button class="btn btn-circle btn-ghost p-2 text-gray-600 hover:bg-danger" onclick={() => removeUserStory(userStory)}>
+        <Delete/>
+      </button>
+    </div>
+  </li>
+{/if}
+

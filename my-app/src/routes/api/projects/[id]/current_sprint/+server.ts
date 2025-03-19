@@ -19,7 +19,7 @@ export async function GET({ params }: RequestEvent) {
 
         if (error) {
             throw new Error(error.message);
-        }
+        }    
     
         return json({ sprint: data }, { status: 200 });
     } catch (error) {

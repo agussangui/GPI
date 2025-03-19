@@ -10,7 +10,7 @@
 	<div class="content-container">
 		<SideMenu />
 		<main class="mr-19">
-			<div class="p-5">
+			<div class="p-3">
 				
 			<span class="font-medium text-2xl ">{title}</span>
 			<div class="mt-5"></div>

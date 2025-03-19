@@ -17,7 +17,7 @@ export async function getBacklog(projectId: string) : Promise<UserStoryClass[] |
     }
   }
 
-export async function getCurrentSprint(projectId: string) : Promise<string | null> {
+export async function getCurrentSprint(projectId: string) : Promise<SprintClass | null> {
     try {
         const response = await fetch(`/api/projects/${projectId}/current_sprint`);
 
@@ -25,10 +25,10 @@ export async function getCurrentSprint(projectId: string) : Promise<string | nul
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         
-        return SprintClass.getSprintIdFromJson(await response.json());
+        return SprintClass.getSprintFromJson(await response.json());
     } catch (err) {
         const error = err instanceof Error ? err : new Error('An unknown error occurred getting current sprint id');
-        return null
+        throw error;
     }
 }
 
@@ -87,7 +87,6 @@ export async function createSprint(projectId: string, name: string, startDate: s
           throw new Error("Project ID is required");
       }
       
-      console.log("Sending create sprint request with project ID:", projectId);
       const response = await fetch(`/api/sprints`, {
           method: 'POST',
           headers: {
