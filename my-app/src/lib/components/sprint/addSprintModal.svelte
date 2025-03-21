@@ -62,9 +62,6 @@
         try {
             console.log("Creating sprint with project ID:", projectId);
             const sprintId = await createSprint(projectId, name, startDate, endDate);
-            // Success - close modal and refresh page
-            showModal = false;
-            window.location.reload();
         } catch (err: unknown) {
             if (typeof err === 'object' && err !== null && 'message' in err && typeof err.message === 'string') {
                 if (err.message.includes('Unauthorized')) {
@@ -80,6 +77,8 @@
             console.error("Error creating sprint:", err);
         } finally {
             submitting = false;
+            showModal = false;
+            window.location.reload();
         }
     }
 

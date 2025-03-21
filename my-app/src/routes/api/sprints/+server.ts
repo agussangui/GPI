@@ -37,6 +37,7 @@ export async function GET(event: RequestEvent) {
                 .lte('start_date', currentDate)
                 .gte('end_date', currentDate);
         }
+        // Note: If no date parameters are provided, this will return all sprints for the project
         
         // Order appropriately based on filter
         if (afterDate) {
@@ -90,6 +91,35 @@ export async function POST(event: RequestEvent) {
             return json({ 
                 error: 'Missing required fields: name, start_date, and end_date are required' 
             }, { status: 400 });
+        }
+        
+        // Check for date conflicts with existing sprints
+        const newStartDate = new Date(start_date);
+        const newEndDate = new Date(end_date);
+        
+        // Find existing sprints for this project
+        const { data: existingSprints, error: sprintError } = await event.locals.supabase
+            .from('sprints')
+            .select('*')
+            .eq('project_id', project_id);
+            
+        if (sprintError) {
+            throw new Error(sprintError.message);
+        }
+        
+        // Check for overlapping date ranges
+        const hasConflict = existingSprints.some(sprint => {
+            const sprintStartDate = new Date(sprint.start_date);
+            const sprintEndDate = new Date(sprint.end_date);
+            
+            // Check if dates overlap
+            return (newStartDate <= sprintEndDate && newEndDate >= sprintStartDate);
+        });
+        
+        if (hasConflict) {
+            return json({ 
+                error: 'Date conflict: This sprint overlaps with an existing sprint. Please choose different dates.' 
+            }, { status: 409 }); // 409 Conflict
         }
         
         // Insert new sprint
