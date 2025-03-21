@@ -1,5 +1,4 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase';
 
 export async function POST(event: RequestEvent) {
     const { request } = event;
@@ -12,7 +11,7 @@ export async function POST(event: RequestEvent) {
             return json({ error: 'Project ID, title, and priority are required' }, { status: 400 });
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await event.locals.supabase
             .from('user_stories')
             .insert([
                 {

@@ -1,5 +1,4 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase';
 
 export async function PUT(event: RequestEvent) {
     const { request, params } = event;
@@ -27,7 +26,7 @@ export async function PUT(event: RequestEvent) {
             return json({ error: 'No valid fields to update' }, { status: 400 });
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await event.locals.supabase
             .from('user_stories')
             .update(updatedFields)
             .eq('id', id)
@@ -55,7 +54,7 @@ export async function DELETE(event: RequestEvent) {
     }
 
     try {
-        const { error } = await supabase
+        const { error } = await event.locals.supabase
             .from('user_stories')
             .delete()
             .eq('id', id);

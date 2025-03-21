@@ -1,26 +1,25 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase';
 import { SprintStatusEnum } from '$models/sprintStatusEnum';
 
-export async function GET({ url }: RequestEvent) {
+export async function GET(event: RequestEvent) {
     try {
-        // Authenticate user
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        // Get the user from locals
+        const user = event.locals.user;
         
-        if (authError || !user) {
+        if (!user) {
             return json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
         }
         
-        const projectId = url.searchParams.get('project_id');
-        const afterDate = url.searchParams.get('after_date');
-        const beforeDate = url.searchParams.get('before_date');
-        const currentDate = url.searchParams.get('current_date');
+        const projectId = event.url.searchParams.get('project_id');
+        const afterDate = event.url.searchParams.get('after_date');
+        const beforeDate = event.url.searchParams.get('before_date');
+        const currentDate = event.url.searchParams.get('current_date');
 
         if (!projectId) {
             return json({ error: 'Project ID is required' }, { status: 400 });
         }
 
-        let query = supabase
+        let query = event.locals.supabase
             .from('sprints')
             .select('*')
             .eq('project_id', projectId);
@@ -64,17 +63,17 @@ export async function GET({ url }: RequestEvent) {
     }
 }
 
-export async function POST({ request }: RequestEvent) {
+export async function POST(event: RequestEvent) {
     try {
-        // Get authenticated user
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        // Get the user from locals
+        const user = event.locals.user;
         
-        if (authError || !user) {
-            console.error("Authentication error:", authError);
+        if (!user) {
+            console.error("Authentication error: No authenticated user");
             return json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
         }
         
-        const requestData = await request.json();
+        const requestData = await event.request.json();
         console.log("Sprint creation request data:", requestData);
         
         // Validate required fields
@@ -94,7 +93,7 @@ export async function POST({ request }: RequestEvent) {
         }
         
         // Insert new sprint
-        const { data, error } = await supabase
+        const { data, error } = await event.locals.supabase
             .from('sprints')
             .insert({
                 project_id,
