@@ -104,6 +104,9 @@ export async function createSprint(projectId: string, name: string, startDate: s
           const errorData = await response.json().catch(() => null);
           const errorMsg = errorData?.error || `HTTP error! Status: ${response.status}`;
           console.error("API error:", errorMsg);
+          if (response.status == 409) {
+              alert("Error while creating new sprint. Dates overlap with an existing sprint.")
+          }
           throw new Error(errorMsg);
       }
       
