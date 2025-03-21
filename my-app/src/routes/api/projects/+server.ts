@@ -1,11 +1,11 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase';
 
 export async function POST(event: RequestEvent) {
 	try {
-		const { data: { user }, error: authError } = await supabase.auth.getUser();
+		// Get the user from locals instead of making a separate request
+		const user = event.locals.user;
 
-		if (authError || !user) {
+		if (!user) {
 			return json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
@@ -16,7 +16,7 @@ export async function POST(event: RequestEvent) {
 		}
 
 		
-		const { data, error } = await supabase
+		const { data, error } = await event.locals.supabase
 			.from('projects')
 			.insert([{ user_id: user.id, name }])
 			.select()

@@ -1,15 +1,14 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase';
 
-export async function GET({ params }: RequestEvent) {
-    const project_id = params.id;
+export async function GET(event: RequestEvent) {
+    const project_id = event.params.id;
 
     if (!project_id) {
         return json({ error: 'Project ID is required' }, { status: 400 });
     }
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await event.locals.supabase
             .from('sprints')
             .select('*')
             .eq('project_id', project_id)

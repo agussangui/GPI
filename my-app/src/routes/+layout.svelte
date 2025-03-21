@@ -2,32 +2,31 @@
   import "tailwindcss/tailwind.css";
   import "$lib/styles/global.css";
   import { onMount } from 'svelte';
-  import { supabase } from '$lib/supabase';
   import { userStore } from '$stores/userStore';
+  import { invalidate } from "$app/navigation";
+  import { page } from '$app/stores';
+
+  let { data, children } = $props()
+  let { session, supabase } = $derived(data)
 
   onMount(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      console.log(data)
-      
-      if (data?.session) {
-        userStore.set({
-          authUser: data.session.user,
-          session: data.session
-        });
+    // Set up auth state change listener
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, _session) => {
+      // Only refresh the session if the session actually changed
+      if (_session?.expires_at !== $page.data.session?.expires_at) {
+        // This invalidation triggers a reload of the root layout data,
+        // keeping the client in sync with the server
+        invalidate('supabase:auth');
       }
-    };
-    
-    checkSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        userStore.set({
-          authUser: session?.user || null,
-          session: session || null
-        });
-      }
-    );
+      // Update the user store for app-wide reactivity
+      userStore.set({
+        authUser: _session?.user || null,
+        session: _session || null
+      });
+    });
 
     return () => {
       subscription.unsubscribe();

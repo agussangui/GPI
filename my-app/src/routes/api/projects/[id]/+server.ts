@@ -1,5 +1,4 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase';
 
 export async function PUT(event: RequestEvent) {
     const { request, params } = event;
@@ -10,9 +9,10 @@ export async function PUT(event: RequestEvent) {
     }
 
     try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        // Get session from locals instead of making a new request
+        const { session } = event.locals;
 
-        if (sessionError || !session?.user) {
+        if (!session?.user) {
             return json({ error: 'Unauthorized: User is not logged in' }, { status: 401 });
         }
 
@@ -24,7 +24,7 @@ export async function PUT(event: RequestEvent) {
             return json({ error: 'Project name is required' }, { status: 400 });
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await event.locals.supabase
             .from('projects')
             .update({ name })
             .eq('id', id)
@@ -52,17 +52,17 @@ export async function DELETE(event: RequestEvent) {
     }
 
     try {
-        // Get the current session and user info
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        // Get session from locals instead of making a new request
+        const { session } = event.locals;
 
-        if (sessionError || !session?.user) {
+        if (!session?.user) {
             return json({ error: 'Unauthorized: User is not logged in' }, { status: 401 });
         }
 
         const user = session.user;
 
         // Delete the project; RLS will ensure the user is the owner
-        const { error } = await supabase
+        const { error } = await event.locals.supabase
             .from('projects')
             .delete()
             .eq('id', id)
