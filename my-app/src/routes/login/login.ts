@@ -1,5 +1,6 @@
 import { goto } from '$app/navigation';
 import { userStore } from '$stores/userStore';
+import { invalidate } from '$app/navigation';
 
 export async function handleLogin(event: Event): Promise<void> {
     event.preventDefault();
@@ -21,11 +22,16 @@ export async function handleLogin(event: Event): Promise<void> {
         const result = await response.json();
 
         if (response.ok) {
-            alert('Login successful');
+            // Invalidate the session data to trigger a reload
+            await invalidate('supabase:auth');
+            
+            // Update the user store
             userStore.set({
                 authUser: result.data.user,
                 session: result.data.session,
             });
+            
+            // Navigate to projects page
             goto('/projects');
         } else {
             alert('Error logging in: ' + result.error);

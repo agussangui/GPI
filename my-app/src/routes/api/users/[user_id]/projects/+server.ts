@@ -1,5 +1,4 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase';
 
 export async function GET(event: RequestEvent) {
     const { params } = event;
@@ -10,7 +9,7 @@ export async function GET(event: RequestEvent) {
     }
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await event.locals.supabase
             .from('projects')
             .select('*')
             .eq('user_id', user_id);
