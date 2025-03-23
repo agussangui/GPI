@@ -25,7 +25,7 @@ export class SprintClass implements SprintInterface {
 
   static getSprintFromJson(json: any) {
     if (!json.sprint) {
-        throw new Error("Invalid JSON format");
+        return null;
     }
     
     return new SprintClass(

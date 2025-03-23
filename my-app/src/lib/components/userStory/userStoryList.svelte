@@ -21,7 +21,7 @@
         />
     {/each}
   
-    {#if userStoryList.length === 0}
+    {#if userStoryList?.length === 0}
       <li class="list-row text-center text-gray-400">
         No user stories
       </li>

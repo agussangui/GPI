@@ -15,7 +15,7 @@ export async function GET({ params }: RequestEvent) {
             .select('id')
             .eq('project_id', project_id)
             .lte('start_date', now)
-            .gte('end_date', now ).single()
+            .gte('end_date', now ).maybeSingle()
 
         if (error) {
             throw new Error(error.message);
