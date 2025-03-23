@@ -3,7 +3,7 @@
     import AddUserStoryModal from "./addUserStoryModal.svelte";
     
     let { userStoryList, sprintId, addUserStoryToSprint, addUserStoryToBacklog, removeUserStory } = $props();
-    let showModal: boolean = false;
+    let showModal: boolean = $state(false);
 </script>
 
 <AddUserStoryModal bind:showModal />

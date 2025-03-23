@@ -7,7 +7,7 @@
   import { page } from '$app/state';
   import { getBacklog, getCurrentSprint, getSprintStories } from '$services/projectService';
   import { updateUserStoryOnSprint, updateUserStoryOffSprint, deleteUserStory } from '$services/userStoriesService';
-	import UserStory from '$lib/components/userStory/userStory.svelte';
+	import { sprintStore } from '$stores/sprintStore';
 
   let error: Error | null = null;
   let loading = true;
@@ -26,6 +26,7 @@
         currentSprint = await getCurrentSprint(projectId);
         if (currentSprint) {
             currentStories = await getSprintStories(projectId, currentSprint.id);
+            sprintStore.set({ upcomingSprint: currentSprint });
         }
     } catch (err) {
         error = err as Error;
@@ -93,7 +94,6 @@
       <div class="w-full">
         <UserStoryList userStoryList={backlog} sprintId={null} addUserStoryToSprint={addUserStoryToSprint} addUserStoryToBacklog={addUserStoryToBacklog} removeUserStory={removeUserStory}/>
       </div>
-    
       <div class="w-full">
         <UserStoryList userStoryList={currentStories} sprintId={currentSprint?.id} addUserStoryToSprint={addUserStoryToSprint} addUserStoryToBacklog={addUserStoryToBacklog} removeUserStory={removeUserStory}/>
       </div>

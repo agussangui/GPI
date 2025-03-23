@@ -4,10 +4,12 @@
   import Add from "../icons/Add.svelte";
   import Minus from "../icons/Minus.svelte";
   import { UserStoryStatusEnum } from "$models/userStoryStatusEnum";
-  
+  import { get } from 'svelte/store';
+  import { sprintStore } from "$stores/sprintStore";
   let { userStory, addUserStoryToSprint, addUserStoryToBacklog, removeUserStory } = $props();
 
   let isDeleted: boolean = $state(false);
+  const { upcomingSprint } = get(sprintStore);
   
 </script>
 
@@ -25,12 +27,12 @@
       {/if}
       
       {#if userStory.status_id == UserStoryStatusEnum.backlog}
-        <button class="btn btn-circle btn-ghost p-2 text-gray-600 hover:bg-info" onclick={() => addUserStoryToSprint(userStory)}>
-          <Add/>
-        </button>
-      {/if }
-      
-      {#if userStory.status_id != UserStoryStatusEnum.backlog}
+        {#if upcomingSprint}
+          <button class="btn btn-circle btn-ghost p-2 text-gray-600 hover:bg-info" onclick={() => addUserStoryToSprint(userStory)}>
+            <Add/>
+          </button>
+          {/if}
+      {:else}
         <button class="btn btn-circle btn-ghost p-2 text-gray-600 hover:bg-warning" onclick={() => addUserStoryToBacklog(userStory)}>
           <Minus/>
         </button>
