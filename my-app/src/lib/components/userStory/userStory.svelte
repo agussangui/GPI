@@ -22,7 +22,7 @@
   <li class="list-row flex items-center justify-between px-5 py-4 border-b border-gray-200 hover:bg-gray-50">
     <div class="flex items-center space-x-4">
       <div class="font-semibold">{userStory.title}</div>
-      <div class="badge badge-soft badge-primary">{userStory.getStatus()}</div>
+      <div class="badge badge-soft badge-warning">{userStory.priority}</div>
       <div class="text-gray-600">{userStory.story_points} SP</div>
     </div>
     
