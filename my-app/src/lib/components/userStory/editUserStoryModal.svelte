@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type {UserStoryInterface} from "$models/userStory";
+	import {UserStoryClass} from "$models/userStory";
+  import type { UserStoryInterface} from "$models/userStory";
     import CloseBtn from "../icons/CloseBtn.svelte";
     import ErrorToast from "../alerts/errorToast.svelte";
     import { page } from '$app/state';
@@ -8,7 +9,7 @@
 	import { UserStoryStatusEnum } from "$models/userStoryStatusEnum.ts";
 
 
-    export let userStory
+    export let userStory: UserStoryClass
     export let showEditModal: boolean
       
     let newUserStory: UserStoryInterface;
@@ -20,23 +21,27 @@
         const form = event.currentTarget as HTMLFormElement; 
         const formData = new FormData(form); 
 
-        const jsonData = {
-            title: formData.get('title') as string,
-            description: formData.get('description') || null,
-            priority: Number(formData.get('priority')), 
-            story_points: Number(formData.get('story_points')) || null, 
-        };
+        const updatedFields: Record<string, any> = {};
+
+        for (const [key, value] of formData.entries()) {
+            if (value)
+            updatedFields[key] = key === 'priority' || key === 'story_points' ? Number(value) : value;     
+        }
 
         try {
-        const response = await fetch('/api/user_stories', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(jsonData),
-        });
+          const response = await fetch('/api/user_stories/'+userStory.id, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(updatedFields),
+          });
 
-        console.log(JSON.stringify(jsonData))
-        const result = await response.json();
-        console.log('🔄 Respuesta del servidor:', result);
+          if (!response.ok) {
+              throw new Error('Failed to update user story');
+          }
+          const result = await response.json();
+          userStory = userStory.copyWithUpdatedFields(updatedFields);
+          console.log(userStory)
+          
         } catch (error) {
             errorToaster =true
         console.error('❌ Error en la petición:', error);
@@ -61,13 +66,12 @@
       <form id='form' class="fieldset" onsubmit={(e) => { submitForm(e); }}>
         <input type="text" name="title" class="input" placeholder={userStory.title} />
         <input type="text" name="description" class="input" placeholder={userStory.description} />
-        <input type="number" name="story_points" class="input validator" required placeholder={ userStory.story_points.toString()}/>
-        <input type="number" name="priority" class="input validator" required placeholder={ userStory.priority.toString()}/>
+        <input type="number" name="story_points" class="input validator" placeholder={ userStory.story_points.toString()}/>
+        <input type="number" name="priority" class="input validator"  placeholder={ userStory.priority.toString()}/>
         
-      <div class="modal-action">
-              
-        <button class="btn" onclick={()=> showEditModal=false}>Add</button>
-      </div>
+`        <div class="modal-action">
+            <button class="btn" onclick={()=> showEditModal=false}>Save</button>
+        </div>
       </form>
     </div>
   </div>

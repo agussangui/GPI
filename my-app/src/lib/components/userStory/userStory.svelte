@@ -16,7 +16,7 @@
   let showEditModal: boolean = $state(false);
 </script>
 
-  <EditUserStoryModal bind:showEditModal userStory={userStory} />  
+  <EditUserStoryModal bind:showEditModal bind:userStory />  
 
 {#if !isDeleted}
   <li class="list-row flex items-center justify-between px-5 py-4 border-b border-gray-200 hover:bg-gray-50">
