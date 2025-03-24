@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type {UserStoryInterface} from "$models/userStory";
+	import {UserStoryClass, type UserStoryInterface} from "$models/userStory";
     import CloseBtn from "../icons/CloseBtn.svelte";
     import ErrorToast from "../alerts/errorToast.svelte";
     import { page } from '$app/state';
@@ -8,6 +8,7 @@
 	import { UserStoryStatusEnum } from "$models/userStoryStatusEnum.ts";
 
     export let showModal :boolean;
+    export let userStoryList :UserStoryClass[];
     let newUserStory: UserStoryInterface;
     let errorToaster : boolean = false;
     let projectId: string;   
@@ -36,6 +37,8 @@
         console.log(JSON.stringify(jsonData))
         const result = await response.json();
         console.log('🔄 Respuesta del servidor:', result);
+        userStoryList.push( UserStoryClass.getUserStoryFromJson(result))
+        userStoryList = [...userStoryList];
         } catch (error) {
             errorToaster =true
             console.error('❌ Error en la petición:', error);  

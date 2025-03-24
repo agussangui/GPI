@@ -6,7 +6,7 @@
     let showModal: boolean = $state(false);
 </script>
 
-<AddUserStoryModal bind:showModal />
+<AddUserStoryModal bind:showModal bind:userStoryList />
 
 <div class="grid gap-6">
   <ul class="list bg-base-100 rounded-box shadow-md p-4" data-theme={sprintId === null ? 'winter' : 'light'}>
