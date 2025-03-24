@@ -25,8 +25,8 @@
             status_id: UserStoryStatusEnum.backlog,
             story_points: Number(formData.get('story_points')) || null, 
         };
-
-        try {
+        
+      try {
         const response = await fetch('/api/user_stories', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -38,9 +38,10 @@
         console.log('🔄 Respuesta del servidor:', result);
         } catch (error) {
             errorToaster =true
-        console.error('❌ Error en la petición:', error);
-        }
-    }
+            console.error('❌ Error en la petición:', error);  
+        }   
+        form.reset();
+      }
 
     onMount(()=>{
       if (page.params) {
@@ -51,9 +52,13 @@
 
 <div class="modal" data-theme="light" class:modal-open={showModal}>
     <div class="modal-box">
-        
-        <div onclick={()=> showModal=false}> <CloseBtn/></div>
-        <h3 class="font-bold text-lg">Add new user story</h3> 
+
+      
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="font-bold text-lg">Add new user story</h3> 
+          <div onclick={()=> showModal=false}> <CloseBtn/></div>
+        </div>
+      
 
       <form id='form' class="fieldset" onsubmit={(e) => { submitForm(e); }}>
         <input type="text" name="title" class="input" placeholder="Title" />

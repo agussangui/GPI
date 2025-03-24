@@ -40,6 +40,8 @@
         } catch (error) {
             errorToaster =true
         console.error('❌ Error en la petición:', error);
+        } finally {
+          form.reset();
         }
     }
 
