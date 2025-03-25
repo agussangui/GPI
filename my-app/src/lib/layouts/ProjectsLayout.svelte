@@ -1,6 +1,9 @@
 <script lang="ts">
 	import TopBar from '$lib/components/menus/TopBar.svelte';
+	import { sprintStore } from '$stores/sprintStore';
 	const {title} = $props()
+
+	sprintStore.set({ upcomingSprint: null });
 </script>
 
 <div class="app-container">
