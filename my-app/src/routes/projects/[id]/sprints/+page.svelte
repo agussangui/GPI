@@ -44,15 +44,15 @@
     {:else}
         <div class="space-y-6">
             <SprintList 
-                sprints={currentSprints} 
-                title="Current Sprints" 
-                theme="light"
-            />
-            
-            <SprintList 
                 sprints={upcomingSprints} 
                 title="Upcoming Sprints" 
                 showAddButton={true}
+            />
+            
+            <SprintList 
+                sprints={currentSprints} 
+                title="Current Sprints" 
+                theme="light"
             />
             
             <SprintList 

@@ -6,6 +6,12 @@
     let showModal = $state(false);
     let projectId = page.params.id;
     
+    let sortedSprints = $derived([...sprints].sort((a, b) => {
+        const aDate = new Date(a.start_date);
+        const bDate = new Date(b.start_date);
+        return bDate.getTime() - aDate.getTime();
+    }));
+    
     const formatDate = (dateString: string): string => {
         if (!dateString) return '-';
         const date = new Date(dateString);
@@ -24,7 +30,7 @@
     <li class="p-4 pb-2 text-s opacity-60 tracking-wide font-bold">
         {title}
     </li>
-    {#each sprints as sprint }
+    {#each sortedSprints as sprint }
         <li class="list-row p-3 hover:bg-base-200 flex justify-stretch cursor-pointer" 
             onclick={() => navigateToSprint(sprint.id)}
             onkeydown={(e) => e.key === 'Enter' && navigateToSprint(sprint.id)}
@@ -40,7 +46,7 @@
             </div>
         </li>    
     {/each}
-    {#if sprints.length === 0}
+    {#if sortedSprints.length === 0}
         <li class="list-row">
             <span class="text-gray-400 text-sm m-auto">No sprints</span>
         </li> 
