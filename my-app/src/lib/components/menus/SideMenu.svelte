@@ -7,17 +7,17 @@
 	import Timeline from '$lib/components/icons/Timeline.svelte';
 	import Sprint from '$lib/components/icons/Sprint.svelte';
 	import AddUserStoryModal from '../userStory/addUserStoryModal.svelte';
-	import { getProjectDetails } from '$services/projectService';
+	import { getCurrentSprint, getProjectDetails } from '$services/projectService';
 	import { sprintStore } from '$stores/sprintStore';
 	import type { SprintClass } from '$models/sprint';
 
 	let projectId: string;
 	let projectName: string = 'GPI';
-    let upcomingSprint: SprintClass | null;
+    let currentSprint: SprintClass | null;
     sprintStore.subscribe((value) => {
-        upcomingSprint = value.upcomingSprint;
+                currentSprint = value.currentSprint;
     })
-
+    
 	onMount(async () => {
 		if (page.params) {
 			projectId = page.params.id;
@@ -51,7 +51,7 @@
 		<nav class="side-nav">
 			<ul class="side-nav__list">
 				{#each menuItems as item}
-                    {#if item.id!=='board' || upcomingSprint!=null  }
+                    {#if item.id!=='board' || currentSprint!=null  }
 					<li class="side-nav__item text-sm">
 						<a
 							href={item.href}

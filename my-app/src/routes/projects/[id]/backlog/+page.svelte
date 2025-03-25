@@ -5,7 +5,7 @@
   import { UserStoryClass } from '$models/userStory'
   import { SprintClass } from '$models/sprint';
   import { page } from '$app/state';
-  import { getBacklog, getCurrentSprint, getSprintStories } from '$services/projectService';
+  import { getBacklog, getSprintStories, getUpcomingSprints } from '$services/projectService';
   import { updateUserStoryOnSprint, updateUserStoryOffSprint, deleteUserStory } from '$services/userStoriesService';
 	import { sprintStore } from '$stores/sprintStore';
 
@@ -13,8 +13,9 @@
   let loading = true;
   let projectId: string;
   let backlog: UserStoryClass[] | null = null;
-  let currentSprint: SprintClass | null = null;
-  let currentStories: UserStoryClass[] | null = null;
+  let upcomingSprints: SprintClass[] | null = [];
+  let upcomingSprint: SprintClass | null = null;
+  let sprintStories: UserStoryClass[] | null = null;
   
   onMount(async () => {
     if (page.params) {
@@ -23,10 +24,14 @@
 
     try {
         backlog = await getBacklog(projectId);
-        currentSprint = await getCurrentSprint(projectId);
-        if (currentSprint) {
-            currentStories = await getSprintStories(projectId, currentSprint.id);
-            sprintStore.set({ upcomingSprint: currentSprint });
+        upcomingSprints = await getUpcomingSprints(projectId);
+        if (upcomingSprints!=null && upcomingSprints.length > 0) {
+            upcomingSprint = upcomingSprints[0];
+            sprintStories = await getSprintStories(projectId, upcomingSprint.id);
+            sprintStore.update((store) => ({
+              ...store, 
+              upcomingSprint: upcomingSprint
+            }));
         }
     } catch (err) {
         error = err as Error;
@@ -37,13 +42,13 @@
 
   async function addUserStoryToSprint(userStory: UserStoryClass) {
     try {
-      const updatedUserStory = await updateUserStoryOnSprint(userStory.id, currentSprint!.id);
+      const updatedUserStory = await updateUserStoryOnSprint(userStory.id, upcomingSprint!.id);
         
       if (!updatedUserStory) {
           throw new Error("Failed to retrieve updated user story from API");
       }
         
-      currentStories = currentStories ? [...currentStories, updatedUserStory] : [updatedUserStory];
+      sprintStories = sprintStories ? [...sprintStories, updatedUserStory] : [updatedUserStory];
       backlog = backlog!.filter(story => story.id !== userStory.id);
     } catch (error) {
       console.error("Failed to update user story:", error);
@@ -60,7 +65,7 @@
       }
         
       backlog = backlog ? [...backlog, updatedUserStory] : [updatedUserStory];
-      currentStories = currentStories!.filter(story => story.id !== userStory.id);
+      sprintStories = sprintStories!.filter(story => story.id !== userStory.id);
     } catch (error) {
       console.error("Failed to update user story:", error);
     }
@@ -71,7 +76,7 @@
         const value = await deleteUserStory(userStory.id);
         if (value) {
           backlog = backlog!.filter(story => story.id !== userStory.id);
-          currentStories = currentStories!.filter(story => story.id !== userStory.id);
+          sprintStories = sprintStories!.filter(story => story.id !== userStory.id);
         } else {
             console.error("Failed to delete user story:", error);
         }
@@ -95,7 +100,7 @@
         <UserStoryList userStoryList={backlog} sprintId={null} addUserStoryToSprint={addUserStoryToSprint} addUserStoryToBacklog={addUserStoryToBacklog} removeUserStory={removeUserStory}/>
       </div>
       <div class="w-full">
-        <UserStoryList userStoryList={currentStories} sprintId={currentSprint?.id} addUserStoryToSprint={addUserStoryToSprint} addUserStoryToBacklog={addUserStoryToBacklog} removeUserStory={removeUserStory}/>
+        <UserStoryList userStoryList={sprintStories} sprintId={upcomingSprint?.id} addUserStoryToSprint={addUserStoryToSprint} addUserStoryToBacklog={addUserStoryToBacklog} removeUserStory={removeUserStory}/>
       </div>
     </div>
   {/if}
