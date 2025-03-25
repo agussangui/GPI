@@ -3,9 +3,12 @@
     import { page } from '$app/stores';
     import { getCurrentSprint } from '$services/projectService';
     import { goto } from '$app/navigation';
-
+    import { get } from 'svelte/store';
+    import { sprintStore } from "$stores/sprintStore";
+	
     let projectId: string;
     let loading = true;
+    const { currentSprint } = get(sprintStore);
 
     onMount(async () => {
         if ($page.params) {
@@ -13,8 +16,6 @@
         }
 
         try {
-            const currentSprint = await getCurrentSprint(projectId);
-            
             if (currentSprint) {
                 goto(`/projects/${projectId}/board/${currentSprint.id}`);
             } else {
