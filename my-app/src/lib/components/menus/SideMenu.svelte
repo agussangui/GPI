@@ -8,9 +8,15 @@
 	import Sprint from '$lib/components/icons/Sprint.svelte';
 	import AddUserStoryModal from '../userStory/addUserStoryModal.svelte';
 	import { getProjectDetails } from '$services/projectService';
+	import { sprintStore } from '$stores/sprintStore';
+	import type { SprintClass } from '$models/sprint';
 
 	let projectId: string;
 	let projectName: string = 'GPI';
+    let upcomingSprint: SprintClass | null;
+    sprintStore.subscribe((value) => {
+        upcomingSprint = value.upcomingSprint;
+    })
 
 	onMount(async () => {
 		if (page.params) {
@@ -45,6 +51,7 @@
 		<nav class="side-nav">
 			<ul class="side-nav__list">
 				{#each menuItems as item}
+                    {#if item.id!=='board' || upcomingSprint!=null  }
 					<li class="side-nav__item text-sm">
 						<a
 							href={item.href}
@@ -57,6 +64,7 @@
 							<span>{item.label}</span>
 						</a>
 					</li>
+                    {/if}
 				{/each}
 			</ul>
 		</nav>
