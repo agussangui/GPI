@@ -1,5 +1,21 @@
 import { SprintClass } from "$models/sprint";
 import { UserStoryClass } from "$models/userStory";
+import { ProjectClass } from "$models/project";
+
+export async function getProjectDetails(projectId: string): Promise<ProjectClass | null> {
+  try {
+    const response = await fetch(`/api/projects/${projectId}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return ProjectClass.getSingleProjectFromJson(await response.json());
+  } catch (err) {
+    console.error("Error fetching project details:", err);
+    return null;
+  }
+}
 
 export async function getBacklog(projectId: string) : Promise<UserStoryClass[] | null>{
 
