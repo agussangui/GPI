@@ -150,3 +150,19 @@ export async function getSprintStories(projectId:string, sprintId: string) : Pro
   }
 }
 
+export async function getSprintById(projectId: string, sprintId: string): Promise<SprintClass | null> {
+  try {
+    const response = await fetch(`/api/sprints/${sprintId}?project_id=${projectId}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return SprintClass.getSprintFromJson(await response.json());
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error('An unknown error occurred getting sprint');
+    console.error(error);
+    return null;
+  }
+}
+
