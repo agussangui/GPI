@@ -1,5 +1,31 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
 
+export async function GET(event: RequestEvent) {
+    const { params } = event;
+    const id = params.id;
+
+    if (!id) {
+        return json({ error: 'Project ID is required' }, { status: 400 });
+    }
+
+    try {
+        const { data, error } = await event.locals.supabase
+            .from('projects')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        return json({ project: data }, { status: 200 });
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
+        return json({ error: errorMessage }, { status: 500 });
+    }
+}
+
 export async function PUT(event: RequestEvent) {
     const { request, params } = event;
     const id = params.id;
