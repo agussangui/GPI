@@ -2,7 +2,20 @@
 	//import '$lib/styles/global.css';
 	import TopBar from '$lib/components/menus/TopBar.svelte';
 	import SideMenu from '$lib/components/menus/SideMenu.svelte';
+	import { onMount } from 'svelte';
+	import { sprintStore } from '$stores/sprintStore';
+	import { getCurrentSprint } from '$services/projectService';
+	import { page } from '$app/state';
+
 	const {title} = $props()
+
+	onMount(async() => {
+		const currentSprint = await getCurrentSprint(page.params.id); 
+		sprintStore.update((store) => ({
+				...store, 
+				currentSprint: currentSprint
+			}));
+	}) 
 </script>
 
 <div class="app-container">

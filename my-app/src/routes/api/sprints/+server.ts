@@ -1,26 +1,25 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase';
 import { SprintStatusEnum } from '$models/sprintStatusEnum';
 
-export async function GET({ url }: RequestEvent) {
+export async function GET(event: RequestEvent) {
     try {
-        // Authenticate user
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        // Get the user from locals
+        const user = event.locals.user;
         
-        if (authError || !user) {
+        if (!user) {
             return json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
         }
         
-        const projectId = url.searchParams.get('project_id');
-        const afterDate = url.searchParams.get('after_date');
-        const beforeDate = url.searchParams.get('before_date');
-        const currentDate = url.searchParams.get('current_date');
+        const projectId = event.url.searchParams.get('project_id');
+        const afterDate = event.url.searchParams.get('after_date');
+        const beforeDate = event.url.searchParams.get('before_date');
+        const currentDate = event.url.searchParams.get('current_date');
 
         if (!projectId) {
             return json({ error: 'Project ID is required' }, { status: 400 });
         }
 
-        let query = supabase
+        let query = event.locals.supabase
             .from('sprints')
             .select('*')
             .eq('project_id', projectId);
@@ -38,6 +37,7 @@ export async function GET({ url }: RequestEvent) {
                 .lte('start_date', currentDate)
                 .gte('end_date', currentDate);
         }
+        // Note: If no date parameters are provided, this will return all sprints for the project
         
         // Order appropriately based on filter
         if (afterDate) {
@@ -64,17 +64,17 @@ export async function GET({ url }: RequestEvent) {
     }
 }
 
-export async function POST({ request }: RequestEvent) {
+export async function POST(event: RequestEvent) {
     try {
-        // Get authenticated user
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        // Get the user from locals
+        const user = event.locals.user;
         
-        if (authError || !user) {
-            console.error("Authentication error:", authError);
+        if (!user) {
+            console.error("Authentication error: No authenticated user");
             return json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
         }
         
-        const requestData = await request.json();
+        const requestData = await event.request.json();
         console.log("Sprint creation request data:", requestData);
         
         // Validate required fields
@@ -93,8 +93,37 @@ export async function POST({ request }: RequestEvent) {
             }, { status: 400 });
         }
         
+        // Check for date conflicts with existing sprints
+        const newStartDate = new Date(start_date);
+        const newEndDate = new Date(end_date);
+        
+        // Find existing sprints for this project
+        const { data: existingSprints, error: sprintError } = await event.locals.supabase
+            .from('sprints')
+            .select('*')
+            .eq('project_id', project_id);
+            
+        if (sprintError) {
+            throw new Error(sprintError.message);
+        }
+        
+        // Check for overlapping date ranges
+        const hasConflict = existingSprints.some(sprint => {
+            const sprintStartDate = new Date(sprint.start_date);
+            const sprintEndDate = new Date(sprint.end_date);
+            
+            // Check if dates overlap
+            return (newStartDate <= sprintEndDate && newEndDate >= sprintStartDate);
+        });
+        
+        if (hasConflict) {
+            return json({ 
+                error: 'Date conflict: This sprint overlaps with an existing sprint. Please choose different dates.' 
+            }, { status: 409 }); // 409 Conflict
+        }
+        
         // Insert new sprint
-        const { data, error } = await supabase
+        const { data, error } = await event.locals.supabase
             .from('sprints')
             .insert({
                 project_id,

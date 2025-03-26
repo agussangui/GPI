@@ -51,8 +51,44 @@ export class UserStoryClass implements UserStoryInterface {
       );
   }
 
+  static getUserStoryFromJson(json: any) {
+    if (!json.user_story) {
+        throw new Error("Invalid JSON format");
+    }
+
+    const story = json.user_story;
+    return new UserStoryClass(
+        story.id,
+        story.project_id,
+        story.sprint_id,
+        story.title,
+        story.description,
+        story.priority,
+        story.story_points,
+        story.created_at,
+        story.status_id
+    );
+}
   getStatus(): string {
       return UserStoryStatusEnum[this.status_id];
+  }
+
+  update(fields: Partial<UserStoryClass>) {
+    Object.assign(this, fields);
+  }
+
+  copyWithUpdatedFields(updatedFields: Record<string, any>) :UserStoryClass {
+    return new UserStoryClass(
+        this.id,
+        this.project_id,
+        this.sprint_id,
+        updatedFields.title || this.title,
+        updatedFields.description || this.description,
+        updatedFields.priority !== undefined ? updatedFields.priority : this.priority,
+        updatedFields.story_points !== undefined ? updatedFields.story_points : this.story_points,
+        this.created_at,
+        this.status_id
+    );
   }
 
 }

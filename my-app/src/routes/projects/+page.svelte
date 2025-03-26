@@ -6,6 +6,8 @@
     import { userStore } from '$stores/userStore';
     import DeleteProjectModal from '$lib/components/projects/DeleteProjectModal.svelte';
     import AddProjectModal from '$lib/components/projects/AddProjectModal.svelte';
+	import { sprintStore } from '$stores/sprintStore';
+    import { getCurrentSprint } from '$services/projectService';
 
     let error: Error | null = null;
     let projects: ProjectClass[] = [];
@@ -51,7 +53,7 @@
         }
     }
 
-    function openProjectDashboard(projectId: string) {
+    async function openProjectDashboard(projectId: string) {
         goto(`/projects/${projectId}/backlog`);
     }
     

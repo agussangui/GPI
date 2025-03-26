@@ -1,8 +1,8 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase';
 
-export async function POST() {
-  const { error } = await supabase.auth.signOut();
+export async function POST(event: RequestEvent) {
+  // Use the server's Supabase client that properly handles cookies
+  const { error } = await event.locals.supabase.auth.signOut();
 
   if (error) {
     return json({ error: error.message }, { status: 400 });

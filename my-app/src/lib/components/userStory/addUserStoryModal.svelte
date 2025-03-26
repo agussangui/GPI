@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type {UserStoryInterface} from "$models/userStory";
+	import {UserStoryClass, type UserStoryInterface} from "$models/userStory";
     import CloseBtn from "../icons/CloseBtn.svelte";
     import ErrorToast from "../alerts/errorToast.svelte";
     import { page } from '$app/state';
@@ -8,6 +8,7 @@
 	import { UserStoryStatusEnum } from "$models/userStoryStatusEnum.ts";
 
     export let showModal :boolean;
+    export let userStoryList :UserStoryClass[];
     let newUserStory: UserStoryInterface;
     let errorToaster : boolean = false;
     let projectId: string;   
@@ -25,8 +26,8 @@
             status_id: UserStoryStatusEnum.backlog,
             story_points: Number(formData.get('story_points')) || null, 
         };
-
-        try {
+        
+      try {
         const response = await fetch('/api/user_stories', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -36,11 +37,14 @@
         console.log(JSON.stringify(jsonData))
         const result = await response.json();
         console.log('🔄 Respuesta del servidor:', result);
+        userStoryList.push( UserStoryClass.getUserStoryFromJson(result))
+        userStoryList = [...userStoryList];
         } catch (error) {
             errorToaster =true
-        console.error('❌ Error en la petición:', error);
-        }
-    }
+            console.error('❌ Error en la petición:', error);  
+        }   
+        form.reset();
+      }
 
     onMount(()=>{
       if (page.params) {
@@ -51,9 +55,13 @@
 
 <div class="modal" data-theme="light" class:modal-open={showModal}>
     <div class="modal-box">
-        
-        <div onclick={()=> showModal=false}> <CloseBtn/></div>
-        <h3 class="font-bold text-lg">Add new user story</h3> 
+
+      
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="font-bold text-lg">Add new user story</h3> 
+          <div onclick={()=> showModal=false}> <CloseBtn/></div>
+        </div>
+      
 
       <form id='form' class="fieldset" onsubmit={(e) => { submitForm(e); }}>
         <input type="text" name="title" class="input" placeholder="Title" />
