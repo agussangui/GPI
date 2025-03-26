@@ -24,6 +24,11 @@
 
     try {
         backlog = await getBacklog(projectId);
+        
+        if (backlog) {
+        backlog = backlog.sort((a, b) => a.priority - b.priority);
+    }
+
         upcomingSprints = await getUpcomingSprints(projectId);
         if (upcomingSprints!=null && upcomingSprints.length > 0) {
             upcomingSprint = upcomingSprints[0];
