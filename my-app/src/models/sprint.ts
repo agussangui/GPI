@@ -22,6 +22,9 @@ export class SprintClass implements SprintInterface {
     public status_id?: number // Keep for backward compatibility but mark as optional
   ) {}
 
+  getLocaleDateStr() {
+    return new Date(this.start_date).toLocaleDateString()+" - "+new Date(this.end_date).toLocaleDateString()
+  }
 
   static getSprintFromJson(json: any) {
     if (!json.sprint) {
