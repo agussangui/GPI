@@ -3,6 +3,7 @@
     import { UserStoryStatusEnum } from '$models/userStoryStatusEnum'
     import { updateUserStoryStatus } from '$services/userStoriesService';
     import { onMount } from 'svelte';
+    import {sortByPriority} from "$lib/util.ts";
 
     export let userStoryList: UserStoryClass[] | null = [];
 
@@ -52,7 +53,7 @@
         <div class="rounded-lg p-4 shadow-md {color}">
             <h2 class="text-lg font-bold mb-2">{title}</h2>
             <div class="space-y-2">
-                {#each (userStoryList ?? []).filter(story => Number(story.status_id) === status) as story}
+                {#each (sortByPriority((userStoryList ?? []))?? []).filter(story => Number(story.status_id) === status) as story}
                     <div class="bg-white p-3 rounded-md shadow flex justify-between items-center">
                         <div>
                             <h3 class="font-semibold">{story.title}</h3>
