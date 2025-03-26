@@ -66,8 +66,8 @@
       <form id='form' class="fieldset" onsubmit={(e) => { submitForm(e); }}>
         <input type="text" name="title" class="input" placeholder="Title" />
         <input type="text" name="description" class="input" placeholder="Description" />
-        <input type="number" name="story_points" class="input validator" required placeholder="Strory points"/>
-        <input type="number" name="priority" class="input validator" required placeholder="Priority"/>
+        <input type="number" name="story_points" class="input validator" required placeholder="Story points" min="1"/>
+        <input type="number" name="priority" class="input validator" required placeholder="Priority" min="1"/>
         
       <div class="modal-action">
               
