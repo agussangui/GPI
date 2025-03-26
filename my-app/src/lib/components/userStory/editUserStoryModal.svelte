@@ -66,8 +66,8 @@
       <form id='form' class="fieldset" onsubmit={(e) => { submitForm(e); }}>
         <input type="text" name="title" class="input" placeholder={userStory.title} />
         <input type="text" name="description" class="input" placeholder={userStory.description} />
-        <input type="number" name="story_points" class="input validator" placeholder={ userStory.story_points.toString()}/>
-        <input type="number" name="priority" class="input validator"  placeholder={ userStory.priority.toString()}/>
+        <input type="number" name="story_points" class="input validator" placeholder={ userStory.story_points.toString()} min="1"/>
+        <input type="number" name="priority" class="input validator"  placeholder={ userStory.priority.toString()} min="1"/>
         
 `        <div class="modal-action">
             <button class="btn" onclick={()=> showEditModal=false}>Save</button>
