@@ -117,13 +117,14 @@
     <p style="color: red;">Error: {error.message}</p>
   {:else}
     {#if upcomingSprints && upcomingSprints.length > 1}
-      <div class="min-w-[250px]" data-theme="light">
-          <label for="sprint-select" class="block text-sm font-medium text-gray-700">
-              Select Sprint
+<div class="w-full  flex justify-end pb-5 -mt-12">
+    <div class="flex w-1/2  items-center px-2"  data-theme="light">
+          <label for="sprint-select" class="block text-sm font-medium text-gray-700 w-full">
+              Select Upcoming Sprint:
           </label>
             <select 
                 id="sprint-select" 
-                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                class="select mt-1 block w-full text-base border-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-neutral-content select-sm"
                 on:change={handleSprintSelect}
                 value={upcomingSprintId} >
                     <optgroup label="Upcoming Sprints">
@@ -135,6 +136,7 @@
                     </optgroup>
             </select>
       </div>
+    </div>
     {/if}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="w-full">

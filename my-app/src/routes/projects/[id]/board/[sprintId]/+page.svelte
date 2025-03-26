@@ -110,13 +110,13 @@
                 </p>
             </div>
             
-            <div class="min-w-[250px]">
+            <div class="min-w-[250px] px-2">
                 <label for="sprint-select" class="block text-sm font-medium text-gray-700">
                     Select Sprint
                 </label>
-                <select 
+                <select data-theme="light"
                     id="sprint-select" 
-                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                    class=" select mt-1 block w-full text-base border-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-neutral-content "
                     on:change={handleSprintSelect}
                     value={sprintId}
                 >
