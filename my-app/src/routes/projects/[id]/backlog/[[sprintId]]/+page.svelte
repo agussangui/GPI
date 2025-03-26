@@ -31,9 +31,14 @@
     loadSprintData();
   }
 
+  function sortByPriority(backlog: UserStoryClass[] | null): UserStoryClass[] | null {
+    return backlog?.sort((a, b) => a.priority - b.priority) ?? null;
+  }
+
   async function loadSprintData() {
     try {
         backlog = await getBacklog(projectId);
+        backlog = sortByPriority(backlog);
         upcomingSprints = await getUpcomingSprints(projectId);
         if (upcomingSprints!=null && upcomingSprints.length > 0) {
           upcomingSprintId = $page.params.sprintId? $page.params.sprintId: upcomingSprints[0].id
@@ -45,6 +50,7 @@
               upcomingSprint: upcomingSprint
             }));
             sprintStories = await getSprintStories(projectId, upcomingSprintId);
+            sprintStories = sortByPriority(sprintStories)
         }
     } catch (err) {
         error = err as Error;
@@ -61,6 +67,7 @@
       }
         
       sprintStories = sprintStories ? [...sprintStories, updatedUserStory] : [updatedUserStory];
+      sprintStories = sortByPriority(sprintStories)
       backlog = backlog!.filter(story => story.id !== userStory.id);
     } catch (error) {
       console.error("Failed to update user story:", error);
@@ -77,6 +84,7 @@
       }
         
       backlog = backlog ? [...backlog, updatedUserStory] : [updatedUserStory];
+      backlog = sortByPriority(backlog)
       sprintStories = sprintStories!.filter(story => story.id !== userStory.id);
     } catch (error) {
       console.error("Failed to update user story:", error);
