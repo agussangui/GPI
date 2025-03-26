@@ -117,34 +117,36 @@
     <p style="color: red;">Error: {error.message}</p>
   {:else}
     {#if upcomingSprints && upcomingSprints.length > 1}
-<div class="w-full  flex justify-end pb-5 -mt-12">
-    <div class="flex w-1/2  items-center px-2"  data-theme="light">
-          <label for="sprint-select" class="block text-sm font-medium text-gray-700 w-full">
-              Select Upcoming Sprint:
-          </label>
+      <div class="w-full  flex justify-end pb-5 -mt-12">
+        <div class="flex w-1/2  items-center px-2"  data-theme="light">
+            <label for="sprint-select" class="block text-sm font-medium text-gray-700 w-full">
+                Select Upcoming Sprint:
+            </label>
             <select 
-                id="sprint-select" 
-                class="select mt-1 block w-full text-base border-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-neutral-content select-sm"
-                on:change={handleSprintSelect}
-                value={upcomingSprintId} >
-                    <optgroup label="Upcoming Sprints">
-                        {#each upcomingSprints as sprint}
-                            <option value={sprint.id}>
-                                {sprint.name}
-                            </option>
-                        {/each}
-                    </optgroup>
+                  id="sprint-select" 
+                  class="select mt-1 block w-full text-base border-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-neutral-content select-sm"
+                  on:change={handleSprintSelect}
+                  value={upcomingSprintId} >
+                      <optgroup label="Upcoming Sprints">
+                          {#each upcomingSprints as sprint}
+                              <option value={sprint.id}>
+                                  {sprint.name}
+                              </option>
+                          {/each}
+                      </optgroup>
             </select>
+        </div>
       </div>
-    </div>
     {/if}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="flex gap-4">
       <div class="w-full">
         <UserStoryList userStoryList={backlog} sprintId={null} addUserStoryToSprint={addUserStoryToSprint} addUserStoryToBacklog={addUserStoryToBacklog} removeUserStory={removeUserStory}/>
       </div>
-      <div class="w-full">
-        <UserStoryList userStoryList={sprintStories} sprintId={upcomingSprintId} addUserStoryToSprint={addUserStoryToSprint} addUserStoryToBacklog={addUserStoryToBacklog} removeUserStory={removeUserStory}/>
-      </div>
+      {#if upcomingSprint}
+        <div class="w-full">
+          <UserStoryList userStoryList={sprintStories} sprintId={upcomingSprintId} addUserStoryToSprint={addUserStoryToSprint} addUserStoryToBacklog={addUserStoryToBacklog} removeUserStory={removeUserStory}/>
+        </div>
+        {/if}
     </div>
   {/if}
 </DashboardLayout>
