@@ -1,17 +1,17 @@
 <script lang="ts">
-	import DashboardLayout from '$lib/layouts/DashboardLayout.svelte';
-  import { onMount } from 'svelte';
-  import UserStoryList from '$lib/components/userStory/userStoryList.svelte';
-  import { UserStoryClass } from '$models/userStory'
-  import { SprintClass } from '$models/sprint';
-  import { page } from '$app/stores';
-  import { getBacklog, getSprintStories, getUpcomingSprints } from '$services/projectService';
-  import { updateUserStoryOnSprint, updateUserStoryOffSprint, deleteUserStory } from '$services/userStoriesService';
-	import { sprintStore } from '$stores/sprintStore';
-  import { goto } from '$app/navigation';
-  import { getSprintById } from '$services/projectService';
+    import DashboardLayout from '$lib/layouts/DashboardLayout.svelte';
+    import {onMount} from 'svelte';
+    import UserStoryList from '$lib/components/userStory/userStoryList.svelte';
+    import {UserStoryClass} from '$models/userStory'
+    import {SprintClass} from '$models/sprint';
+    import {page} from '$app/stores';
+    import {getBacklog, getSprintById, getSprintStories, getUpcomingSprints} from '$services/projectService';
+    import {deleteUserStory, updateUserStoryOffSprint, updateUserStoryOnSprint} from '$services/userStoriesService';
+    import {sprintStore} from '$stores/sprintStore';
+    import {goto} from '$app/navigation';
+    import {sortByPriority} from "$lib/util.ts";
 
-  let error: Error | null = null;
+    let error: Error | null = null;
   let loading = true;
   let projectId: string;
   let backlog: UserStoryClass[] | null = null;
@@ -29,10 +29,6 @@
 
   $: if ($page.params.sprintId && $page.params.sprintId !== upcomingSprintId) {
     loadSprintData();
-  }
-
-  function sortByPriority(backlog: UserStoryClass[] | null): UserStoryClass[] | null {
-    return backlog?.sort((a, b) => a.priority - b.priority) ?? null;
   }
 
   async function loadSprintData() {
