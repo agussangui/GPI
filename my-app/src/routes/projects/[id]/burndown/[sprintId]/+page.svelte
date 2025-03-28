@@ -1,20 +1,18 @@
 <script lang="ts">
-	import DashboardLayout from "$lib/layouts/DashboardLayout.svelte";
-    import { onMount } from 'svelte';
+    import DashboardLayout from "$lib/layouts/DashboardLayout.svelte";
     import { page } from '$app/stores';
-    import { getSprintById, getSprintStories, getCurrentSprints, getUpcomingSprints, getPastSprints } from '$services/projectService';
+    import { getSprintById, getSprintBurndownData, getCurrentSprints, getUpcomingSprints, getPastSprints } from '$services/projectService';
     import type { SprintClass } from '$models/sprint';
-	import type { UserStoryClass } from "$models/userStory";
-    import KanbanBoard from '$lib/components/projects/KanbanBoard.svelte';
+    import BurndownChart from '$lib/components/projects/BurndownChart.svelte';
     import { goto } from '$app/navigation';
 
-    let error: Error | null = null;
-    let loading = true;
     let projectId: string;
     let sprintId: string;
+    let loading = true;
+    let error: Error | null = null;
     let sprint: SprintClass | null = null;
-    let stories: UserStoryClass[] | null = null;
     
+    let burndownData: any = null;
     let currentSprints: SprintClass[] = [];
     let upcomingSprints: SprintClass[] = [];
     let pastSprints: SprintClass[] = [];
@@ -28,29 +26,34 @@
             sprintId = newSprintId;
             
             if (projectId && sprintId) {
-                loadSprintData();
+                loadData();
             }
         }
     }
 
-    async function loadSprintData() {
+    async function loadData() {
         loading = true;
         error = null;
         
         try {
-            sprint = await getSprintById(projectId, sprintId);
-            if (sprint) {
-                stories = await getSprintStories(projectId, sprint.id);
-            } else {
+            [sprint, burndownData] = await Promise.all([
+                getSprintById(projectId, sprintId),
+                getSprintBurndownData(projectId, sprintId)
+            ]);
+            
+            await loadAllSprints();
+            
+            if (!sprint) {
                 error = new Error('Sprint not found');
             }
         } catch (err) {
             error = err as Error;
+            console.error("Error loading data:", err);
         } finally {
             loading = false;
         }
     }
-
+    
     async function loadAllSprints() {
         try {
             [currentSprints, upcomingSprints, pastSprints] = await Promise.all([
@@ -62,24 +65,20 @@
             console.error("Error loading sprints:", err);
         }
     }
-
-    onMount(async () => {
-        await loadAllSprints();
-    });
     
     function handleSprintSelect(event: Event) {
         const select = event.target as HTMLSelectElement;
         const selectedSprintId = select.value;
 
         if (selectedSprintId) {
-            goto(`/projects/${projectId}/board/${selectedSprintId}`);
+            goto(`/projects/${projectId}/burndown/${selectedSprintId}`);
         } else {
-            goto(`/projects/${projectId}/board`);
+            goto(`/projects/${projectId}/burndown`);
         }
     }
 </script>
 
-<DashboardLayout title="Board">
+<DashboardLayout title="Sprint Burndown">
     {#if loading}
         <div class="flex justify-center items-center h-40">
             <span class="loading loading-spinner loading-lg"></span>
@@ -116,7 +115,7 @@
                 </label>
                 <select data-theme="light"
                     id="sprint-select" 
-                    class=" select mt-1 block w-full text-base border-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-neutral-content "
+                    class="select mt-1 block w-full text-base border-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-neutral-content"
                     on:change={handleSprintSelect}
                     value={sprintId}
                 >
@@ -153,10 +152,48 @@
             </div>
         </div>
         
-        <KanbanBoard 
-            userStoryList={stories} 
-            sprintStartDate={sprint.start_date} 
-            sprintEndDate={sprint.end_date} 
-        />
+        {#if burndownData}
+            <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                <BurndownChart 
+                    idealBurndown={burndownData.ideal_burndown} 
+                    actualBurndown={burndownData.actual_burndown}
+                    dailyCompletedPoints={burndownData.daily_completed_points}
+                    startDate={burndownData.start_date}
+                    endDate={burndownData.end_date}
+                    totalPoints={burndownData.total_points}
+                />
+            </div>
+            
+            {#if burndownData.actual_burndown.length > 0}
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-4">Metrics</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-gray-100 p-4 rounded-md">
+                            <h4 class="font-medium text-gray-700">Total Story Points</h4>
+                            <p class="text-2xl font-bold">{burndownData.total_points}</p>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-md">
+                            <h4 class="font-medium text-gray-700">Completed Points</h4>
+                            <p class="text-2xl font-bold">
+                                {burndownData.total_points - burndownData.actual_burndown[burndownData.actual_burndown.length - 1].points}
+                            </p>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-md">
+                            <h4 class="font-medium text-gray-700">Remaining Points</h4>
+                            <p class="text-2xl font-bold">
+                                {burndownData.actual_burndown[burndownData.actual_burndown.length - 1].points}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {/if}
+        {:else}
+            <div class="alert alert-info shadow-lg">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>No burndown data available for this sprint.</span>
+                </div>
+            </div>
+        {/if}
     {/if}
 </DashboardLayout> 

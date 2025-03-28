@@ -10,6 +10,7 @@ export interface UserStoryInterface {
     story_points: number; // int4
     created_at: string; // timestamp without time zone
     status_id: number; // enum
+    completion_date: string | null; // timestamp without time zone
 
     getStatus() :string;
 }
@@ -25,7 +26,8 @@ export class UserStoryClass implements UserStoryInterface {
     public priority: number,
     public story_points: number,
     public created_at: string,
-    public status_id: number 
+    public status_id: number,
+    public completion_date: string | null = null
   ) {}
 
 
@@ -46,7 +48,8 @@ export class UserStoryClass implements UserStoryInterface {
             story.priority,
             story.story_points,
             story.created_at,
-            story.status_id
+            story.status_id,
+            story.completion_date
           )
       );
   }
@@ -66,7 +69,8 @@ export class UserStoryClass implements UserStoryInterface {
         story.priority,
         story.story_points,
         story.created_at,
-        story.status_id
+        story.status_id,
+        story.completion_date
     );
 }
   getStatus(): string {
@@ -87,7 +91,8 @@ export class UserStoryClass implements UserStoryInterface {
         updatedFields.priority !== undefined ? updatedFields.priority : this.priority,
         updatedFields.story_points !== undefined ? updatedFields.story_points : this.story_points,
         this.created_at,
-        this.status_id
+        updatedFields.status_id !== undefined ? updatedFields.status_id : this.status_id,
+        updatedFields.completion_date !== undefined ? updatedFields.completion_date : this.completion_date
     );
   }
 

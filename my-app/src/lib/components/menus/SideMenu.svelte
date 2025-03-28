@@ -6,14 +6,18 @@
 	import Backlog from '$lib/components/icons/Backlog.svelte';
 	import Timeline from '$lib/components/icons/Timeline.svelte';
 	import Sprint from '$lib/components/icons/Sprint.svelte';
+	import BurndownChart from '$lib/components/icons/BurndownChart.svelte';
 	import AddUserStoryModal from '../userStory/addUserStoryModal.svelte';
 	import { getCurrentSprint, getProjectDetails } from '$services/projectService';
 	import { sprintStore } from '$stores/sprintStore';
 	import type { SprintClass } from '$models/sprint';
+	import type { UserStoryClass } from "$models/userStory";
 
 	let projectId: string;
 	let projectName: string = 'GPI';
     let currentSprint: SprintClass | null;
+    let userStoryList: UserStoryClass[] = [];
+    
     sprintStore.subscribe((value) => {
                 currentSprint = value.currentSprint;
     })
@@ -31,7 +35,8 @@
 		// { id: 'insights', label: 'Insights', icon: Insights, href: `/projects/${projectId}/insights` },
 		{ id: 'backlog', label: 'Backlog', icon: Backlog, href: `/projects/${projectId}/backlog` },
 		{ id: 'board', label: 'Current Sprint', icon: Board, href: `/projects/${projectId}/board` },
-		{ id: 'sprints', label: 'Sprints', icon: Sprint, href: `/projects/${projectId}/sprints` }
+		{ id: 'sprints', label: 'Sprints', icon: Sprint, href: `/projects/${projectId}/sprints` },
+		{ id: 'burndown', label: 'Burndown', icon: BurndownChart, href: `/projects/${projectId}/burndown` }
 		// { id: 'timeline', label: 'Timeline', icon: Timeline, href: `/projects/${projectId}/timeline` }
 	];
 
@@ -43,7 +48,7 @@
 	let showModal = false;
 </script>
 
-<AddUserStoryModal bind:showModal />
+<AddUserStoryModal bind:showModal {userStoryList} />
 
 <aside class="side-menu-wrapper">
 	<div class="side-menu">
@@ -51,7 +56,7 @@
 		<nav class="side-nav">
 			<ul class="side-nav__list">
 				{#each menuItems as item}
-                    {#if item.id!=='board' || currentSprint!=null  }
+                    {#if (item.id !== 'board' && item.id !== 'burndown') || currentSprint != null}
 					<li class="side-nav__item text-sm">
 						<a
 							href={item.href}

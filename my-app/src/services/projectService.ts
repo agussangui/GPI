@@ -166,3 +166,19 @@ export async function getSprintById(projectId: string, sprintId: string): Promis
   }
 }
 
+export async function getSprintBurndownData(projectId: string, sprintId: string): Promise<any> {
+  try {
+    const response = await fetch(`/api/sprints/${sprintId}/burndown?project_id=${projectId}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error('An unknown error occurred getting sprint burndown data');
+    console.error(error);
+    throw error;
+  }
+}
+
