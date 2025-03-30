@@ -1,4 +1,5 @@
 import { SprintClass } from "./sprint";
+import { SprintFlowUserClass, type SprintFlowUser } from "./sprintFlowUser";
 
 export interface Project {
     id: string;
@@ -6,7 +7,7 @@ export interface Project {
     name: string;
     code: string;
     created_at: string;
-
+    user? : SprintFlowUser;
 }
 
 export class ProjectClass implements Project {
@@ -15,38 +16,34 @@ export class ProjectClass implements Project {
         public user_id: string,
         public name: string,
         public code: string,
-        public created_at: string) {}
+        public created_at: string,
+        public user?: SprintFlowUser,
+    ) {}
 
-        static getSingleProjectFromJson(json: any) {
-            if (!json.project) {
-                throw new Error("Invalid JSON format: single project not found");
-            }
-    
-            const project = json.project;
-            return new ProjectClass(
-                project.id,
-                project.user_id,
-                project.name,
-                project.code,
-                project.created_at
-            );
+    static getSingleProjectFromJson(json: any) {
+        if (!json) {
+            throw new Error("Invalid JSON format: single project not found");
         }
+    
+        const projectUser = json.user ? SprintFlowUserClass.getSprintFlowUserFromJson({ sprintFlowUser: json.user }) : undefined;
+    
+        return new ProjectClass(
+            json.id,
+            json.user_id,
+            json.name,
+            json.code,
+            json.created_at,
+            projectUser
+        );
+    }
 
-    static getProjectsFromJson(json: any) {
-        if (!json.projects || !Array.isArray(json.projects)) {
+    static getProjectsFromJson(json: any) {        
+        if (!json || !Array.isArray(json.projects)) {
             throw new Error("Invalid JSON format");
         }
 
         return json.projects.map(
-            (project: any) =>
-                new ProjectClass(
-                    project.id,
-                    project.user_id,
-                    project.name,
-                    project.code,
-                    project.created_at
-                )
+            (project: any) => this.getSingleProjectFromJson(project)
         );
     }
-
 }

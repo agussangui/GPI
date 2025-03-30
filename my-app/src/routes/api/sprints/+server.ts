@@ -24,30 +24,21 @@ export async function GET(event: RequestEvent) {
             .select('*')
             .eq('project_id', projectId);
 
-        // Filter sprints based on date parameters
         if (afterDate) {
-            // Upcoming sprints: start_date is after current date
             query = query.gt('start_date', afterDate);
         } else if (beforeDate) {
-            // Past sprints: end_date is before current date
             query = query.lt('end_date', beforeDate);
         } else if (currentDate) {
-            // Current sprints: current date is between start_date and end_date
             query = query
                 .lte('start_date', currentDate)
                 .gte('end_date', currentDate);
         }
-        // Note: If no date parameters are provided, this will return all sprints for the project
         
-        // Order appropriately based on filter
         if (afterDate) {
-            // For upcoming sprints, order by start date (ascending)
             query = query.order('start_date', { ascending: true });
         } else if (beforeDate) {
-            // For past sprints, order by end date (descending - most recently completed first)
             query = query.order('end_date', { ascending: false });
         } else {
-            // Default order by start date (descending)
             query = query.order('start_date', { ascending: false });
         }
         

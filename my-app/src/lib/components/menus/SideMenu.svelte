@@ -5,6 +5,7 @@
 	import Board from '$lib/components/icons/Board.svelte';
 	import Backlog from '$lib/components/icons/Backlog.svelte';
 	import Timeline from '$lib/components/icons/Timeline.svelte';
+	import Home from '$lib/components/icons/Home.svelte';
 	import Sprint from '$lib/components/icons/Sprint.svelte';
 	import BurndownChart from '$lib/components/icons/BurndownChart.svelte';
 	import AddUserStoryModal from '../userStory/addUserStoryModal.svelte';
@@ -33,6 +34,7 @@
 	// Dynamically generate menu items with correct hrefs based on projectId
 	$: menuItems = [
 		// { id: 'insights', label: 'Insights', icon: Insights, href: `/projects/${projectId}/insights` },
+		{ id: 'home', label: 'Home', icon: Home, href: `/projects/${projectId}` },
 		{ id: 'backlog', label: 'Backlog', icon: Backlog, href: `/projects/${projectId}/backlog` },
 		{ id: 'board', label: 'Current Sprint', icon: Board, href: `/projects/${projectId}/board` },
 		{ id: 'sprints', label: 'Sprints', icon: Sprint, href: `/projects/${projectId}/sprints` },
@@ -42,13 +44,11 @@
 
 	// Check if the route is active
 	function isRouteActive(path: string): boolean {
-		return page.url.pathname.startsWith(path);
+		return page.url.pathname.endsWith(path);
 	}
 
 	let showModal = false;
 </script>
-
-<AddUserStoryModal bind:showModal {userStoryList} />
 
 <aside class="side-menu-wrapper">
 	<div class="side-menu">

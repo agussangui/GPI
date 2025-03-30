@@ -53,8 +53,8 @@
         }
     }
 
-    async function openProjectDashboard(projectId: string) {
-        goto(`/projects/${projectId}/backlog`);
+    function openProjectDashboard(projectId: string) {
+        goto(`/projects/${projectId}`);
     }
     
     function confirmDeleteProject(event: Event, project: ProjectClass) {
