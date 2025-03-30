@@ -76,7 +76,8 @@ const authGuard: Handle = async ({ event, resolve }) => {
   event.locals.user = user
   const protectedPaths = ['/backlog', '/board', '/insights', '/profile', '/timeline', '/projects'];
   
-  if (!event.locals.session && protectedPaths.includes(event.url.pathname)) {
+  if (!event.locals.session && protectedPaths.some(path => event.url.pathname.startsWith(path))) {
+    console.log('redirecting to login')
     redirect(303, '/login')
   }
 
