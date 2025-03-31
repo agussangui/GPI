@@ -18,7 +18,6 @@
       const userId = get(userStore).authUser!.id;
       try {
           projectInvitations = await fetchProjectInvitations(userId);
-          console.log("Project Invitations: ", projectInvitations);
           
       } catch (err) {
           error = err as Error;

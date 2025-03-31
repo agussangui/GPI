@@ -27,6 +27,31 @@ export async function createUserRole(projectId: string, userId: string, role: st
     }
 }
 
+export async function updateUserRole(selectedUserId: string, selectedProjectId:string,  role: string | null): Promise<UserRoleClass | null> {
+    try {
+        const response = await fetch(`/api/user_roles/${selectedProjectId}/${selectedUserId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                role: role,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const jsonData = await response.json();
+
+        return UserRoleClass.getUserRoleFromJson(jsonData);
+    }
+    catch (error) {
+        throw new Error(`Error updating user role: ${error}`);
+    }
+}
+
 
 export async function getSharedProjects(userId: string) : Promise<ProjectClass[] | null> {
     try {
@@ -60,7 +85,6 @@ export async function getUsersInProject(projectId: string) : Promise<UserRoleCla
         }
 
         const jsonData = await response.json();
-        console.log(JSON.stringify(jsonData, null, 2));
 
         return UserRoleClass.getUserRolesFromJson(jsonData);
     } catch (error) {

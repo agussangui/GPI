@@ -43,8 +43,6 @@ export async function POST(event: RequestEvent) {
             throw new Error(`Failed to delete invitation: ${invitationError.message}`);
         }
 
-        console.log('User role created:', userRoleData);
-
         return json({ user_role: userRoleData }, { status: 201 });
 
     } catch (err) {
@@ -111,8 +109,6 @@ export async function GET(event: RequestEvent) {
                     user: user_id,
                 };
             });
-
-            console.log(JSON.stringify(transformedData, null, 2));
             
             return json(transformedData, { status: 200 });
 

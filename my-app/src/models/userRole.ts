@@ -1,4 +1,5 @@
 import { SprintFlowUserClass, type SprintFlowUser } from "./sprintFlowUser";
+import { UserRoleEnum } from "./userRoleEnum";
 
 export interface UserRoleInterface {
     user_id: string;
@@ -6,6 +7,8 @@ export interface UserRoleInterface {
     role: string;
     created_at: string; 
     user?: SprintFlowUser;
+
+    getRole() :string;
 }
 
 export class UserRoleClass implements UserRoleInterface {
@@ -41,5 +44,12 @@ export class UserRoleClass implements UserRoleInterface {
             json.created_at,
             user
         );
+    }
+
+    getRole(): string {
+        if (this.role === undefined || this.role === null || isNaN(Number(this.role))) {
+            return UserRoleEnum[-1];
+        }
+        return UserRoleEnum[Number(this.role)];
     }
 }

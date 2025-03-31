@@ -42,7 +42,6 @@ export async function fetchProjectInvitations(user_id: string | null) : Promise<
         }
 
         const data = await response.json();
-        console.log(JSON.stringify(data, null, 2));
         return ProjectInvitationClass.getProjectInvitationsFromJson(data);
         
     } catch (error) {
