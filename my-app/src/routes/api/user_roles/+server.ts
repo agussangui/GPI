@@ -57,17 +57,16 @@ export async function POST(event: RequestEvent) {
 export async function GET(event: RequestEvent) {
     try {
         const user_id = event.url.searchParams.get("user_id") as string;
+        const project_id = event.url.searchParams.get("project_id") as string;
 
+        let data, error;
         const user = event.locals.user;
         if (!user) {
             return json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
         }
 
-        if (!user_id) {
-            return json({ error: 'User ID is required' }, { status: 400 });
-        }
-
-        const { data: userRoles, error: userRolesError } = await event.locals.supabase
+        if (user_id != null) {
+            const { data: userRoles, error: userRolesError } = await event.locals.supabase
             .from('user_roles')
             .select('project_id')
             .eq('user_id', user_id);
@@ -85,13 +84,41 @@ export async function GET(event: RequestEvent) {
         const { data: projects, error: projectsError } = await event.locals.supabase
             .from('projects')
             .select('*')
-            .in('id', projectIds);
+            .in('id', projectIds)
+            .neq('user_id', user_id);
 
         if (projectsError) {
             throw new Error(projectsError.message);
         }
 
         return json({ projects }, { status: 200 });
+
+        } else if (project_id != null) {
+            ({ data, error } = await event.locals.supabase
+                .from('user_roles')
+                .select('*, user_id(*)')
+                .eq('project_id', project_id)
+            );
+            
+            if (error) {
+                throw new Error(error.message);
+            }
+            
+            const transformedData = (data ?? []).map(invitation => {
+                const { user_id, ...rest } = invitation;
+                return {
+                    ...rest,
+                    user: user_id,
+                };
+            });
+
+            console.log(JSON.stringify(transformedData, null, 2));
+            
+            return json(transformedData, { status: 200 });
+
+        } else {
+            return json({ error: 'User ID or Project ID is required' }, { status: 400 });
+        }
 
     } catch (error) {
         console.error('Error fetching projects:', error);

@@ -1,7 +1,6 @@
 <script lang="ts">
     import ProjectsLayout from "$lib/layouts/ProjectsLayout.svelte";
     import { onMount } from "svelte";
-    import { InvitationsClass } from "$models/invitations";
     import { fetchProjectInvitations } from "$services/invitationsService";
     import { get } from "svelte/store";
     import { userStore } from "$stores/userStore";
@@ -19,6 +18,8 @@
       const userId = get(userStore).authUser!.id;
       try {
           projectInvitations = await fetchProjectInvitations(userId);
+          console.log("Project Invitations: ", projectInvitations);
+          
       } catch (err) {
           error = err as Error;
       } finally {

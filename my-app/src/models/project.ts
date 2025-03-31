@@ -24,9 +24,11 @@ export class ProjectClass implements Project {
         if (!json) {
             throw new Error("Invalid JSON format: single project not found");
         }
-    
-        const projectUser = json.user ? SprintFlowUserClass.getSprintFlowUserFromJson({ sprintFlowUser: json.user }) : undefined;
-    
+            
+        const projectUser = json.user && Object.keys(json.user).length > 0 
+        ? SprintFlowUserClass.getSprintFlowUserFromJson(json.user) 
+        : undefined;
+            
         return new ProjectClass(
             json.id,
             json.user_id,

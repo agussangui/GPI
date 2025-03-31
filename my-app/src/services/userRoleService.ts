@@ -20,7 +20,6 @@ export async function createUserRole(projectId: string, userId: string, role: st
         }
 
         const jsonData = await response.json();
-        console.log(jsonData);
 
         return UserRoleClass.getUserRoleFromJson(jsonData);
     } catch (error) {
@@ -44,5 +43,27 @@ export async function getSharedProjects(userId: string) : Promise<ProjectClass[]
         return ProjectClass.getProjectsFromJson(await response.json());
     } catch (error) {
         throw new Error(`Error fetching shared projects: ${error}`);
+    }
+}
+
+export async function getUsersInProject(projectId: string) : Promise<UserRoleClass[] | null> {
+    try {
+        const response = await fetch(`/api/user_roles?project_id=${projectId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const jsonData = await response.json();
+        console.log(JSON.stringify(jsonData, null, 2));
+
+        return UserRoleClass.getUserRolesFromJson(jsonData);
+    } catch (error) {
+        throw new Error(`Error fetching project's users: ${error}`);
     }
 }
