@@ -1,4 +1,5 @@
 import { UserStoryStatusEnum } from '$models/userStoryStatusEnum'
+import type { UserInfoClass } from './userInfo';
 
 export interface UserStoryInterface {
     id: string; // uuid
@@ -11,7 +12,7 @@ export interface UserStoryInterface {
     created_at: string; // timestamp without time zone
     status_id: number; // enum
     completion_date: string | null; // timestamp without time zone
-
+    assigned_to: string[];
     getStatus() :string;
 }
 
@@ -27,7 +28,8 @@ export class UserStoryClass implements UserStoryInterface {
     public story_points: number,
     public created_at: string,
     public status_id: number,
-    public completion_date: string | null = null
+    public completion_date: string | null = null,
+    public assigned_to: string[] = []
   ) {}
 
 
@@ -49,7 +51,8 @@ export class UserStoryClass implements UserStoryInterface {
             story.story_points,
             story.created_at,
             story.status_id,
-            story.completion_date
+            story.completion_date,
+            story.assigned_to?  story.assigned_to : []
           )
       );
   }

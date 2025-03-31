@@ -2,7 +2,6 @@ export interface UserRoleInterface {
     user_id: string;
     project_id: string;
     role: string;
-    created_at: string; 
 }
 
 export class UserRoleClass implements UserRoleInterface {
@@ -10,7 +9,6 @@ export class UserRoleClass implements UserRoleInterface {
         public user_id: string,
         public project_id: string,
         public role: string,
-        public created_at: string
     ) {}
 
     static getUserRolesFromJson(json: any) {
@@ -23,8 +21,7 @@ export class UserRoleClass implements UserRoleInterface {
                 new UserRoleClass (
                     role.user_id,
                     role.project_id,
-                    role.role,
-                    role.created_at
+                    role.role
                 )
         );
     }
@@ -39,7 +36,6 @@ export class UserRoleClass implements UserRoleInterface {
             role.user_id,
             role.project_id,
             role.role,
-            role.created_at
         );
     }
 }

@@ -9,7 +9,7 @@ export async function PUT(event: RequestEvent) {
     }
 
     try {
-        const { title, description, sprint_id, status_id, priority, story_points, completion_date } = await request.json();
+        const { title, description, sprint_id, status_id, priority, story_points, completion_date, assigned_to } = await request.json();
         const updatedFields: Record<string, any> = {};
 
         if (title !== undefined) updatedFields.title = title;
@@ -18,6 +18,8 @@ export async function PUT(event: RequestEvent) {
         if (priority !== undefined) updatedFields.priority = priority;
         if (story_points !== undefined) updatedFields.story_points = story_points;
         if (completion_date !== undefined) updatedFields.completion_date = completion_date;
+        if (assigned_to !==undefined) updatedFields.assigned_to = assigned_to;
+
 
         if (status_id !== undefined) {
             updatedFields.status_id = `${status_id}`;

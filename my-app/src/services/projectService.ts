@@ -1,6 +1,7 @@
 import { SprintClass } from "$models/sprint";
 import { UserStoryClass } from "$models/userStory";
 import { ProjectClass } from "$models/project";
+import { UserInfoClass } from "$models/userInfo";
 
 export async function getProjectDetails(projectId: string): Promise<ProjectClass | null> {
   try {
@@ -182,3 +183,18 @@ export async function getSprintBurndownData(projectId: string, sprintId: string)
   }
 }
 
+export async function getProjectMembers(projectId: string): Promise<any> {
+  try {
+    const response = await fetch(`/api/projects/${projectId}/participants`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return UserInfoClass.getUserInfoFromJson( await response.json());
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error('An unknown error occurred getting sprint burndown data');
+    console.error(error);
+    throw error;
+  }
+}
