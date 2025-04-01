@@ -1,7 +1,6 @@
 <script lang="ts">
     import UserStory from "./userStory.svelte";
     import AddUserStoryModal from "./addUserStoryModal.svelte";
-    import { get } from 'svelte/store';
     import { sprintStore } from "$stores/sprintStore";
 	
     let { userStoryList, sprintId, addUserStoryToSprint, addUserStoryToBacklog, removeUserStory } = $props();

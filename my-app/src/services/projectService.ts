@@ -11,7 +11,8 @@ export async function getProjectDetails(projectId: string): Promise<ProjectClass
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    return ProjectClass.getSingleProjectFromJson(await response.json());
+    const data = await response.json();    
+    return ProjectClass.getSingleProjectFromJson(data.project);
   } catch (err) {
     console.error("Error fetching project details:", err);
     return null;
