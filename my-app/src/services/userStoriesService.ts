@@ -65,18 +65,7 @@ export async function updateUserStoryStatus(
             throw new Error("Invalid response from API: missing user_story data");
         }
 
-        return new UserStoryClass(
-            data.user_story.id,
-            data.user_story.project_id,
-            data.user_story.sprint_id,
-            data.user_story.title,
-            data.user_story.description,
-            data.user_story.priority,
-            data.user_story.story_points,
-            data.user_story.created_at,
-            data.user_story.status_id,
-            data.user_story.completion_date
-        );
+        return UserStoryClass.getUserStoryFromJson({ user_story: data.user_story });
 
     } catch (err) {
         const error = err instanceof Error ? err : new Error('An unknown error occurred updating user story');
@@ -120,18 +109,7 @@ export async function updateUserStoryCompletionDate(
             throw new Error("Invalid response from API: missing user_story data");
         }
 
-        return new UserStoryClass(
-            data.user_story.id,
-            data.user_story.project_id,
-            data.user_story.sprint_id,
-            data.user_story.title,
-            data.user_story.description,
-            data.user_story.priority,
-            data.user_story.story_points,
-            data.user_story.created_at,
-            data.user_story.status_id,
-            data.user_story.completion_date
-        );
+        return UserStoryClass.getUserStoryFromJson({ user_story: data.user_story });
 
     } catch (err) {
         const error = err instanceof Error ? err : new Error('An unknown error occurred updating user story');

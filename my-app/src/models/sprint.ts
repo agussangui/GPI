@@ -87,4 +87,15 @@ export class SprintClass implements SprintInterface {
     }
   }
 
+  copyWithUpdatedFields(updatedFields: Record<string, any>) :SprintClass {
+    return new SprintClass(
+        this.id,
+        this.project_id,
+        updatedFields.name || this.name,
+        updatedFields.status_id !== undefined ? updatedFields.status_id : this.status_id,
+        updatedFields.start_date !== undefined ? updatedFields.start_date : this.start_date,
+        updatedFields.end_date !== undefined ? updatedFields.end_date : this.end_date
+    );
+  }
+
 }

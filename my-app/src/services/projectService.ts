@@ -199,3 +199,23 @@ export async function getProjectMembers(projectId: string): Promise<any> {
     throw error;
   }
 }
+
+
+export async function deleteUpcomingSprint(sprintId: string): Promise<any> {
+  try {
+    const response = await fetch(`/api/sprints/${sprintId}`,{
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return true
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error('An unknown error occurred deleting the sprint');
+    console.error(error);
+    throw error;
+  }
+}
+

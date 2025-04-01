@@ -1,4 +1,4 @@
-import { json, error } from '@sveltejs/kit';
+import { json, error, type RequestEvent } from '@sveltejs/kit';
 
 export async function GET({ params, url, locals }) {
     try {
@@ -37,3 +37,69 @@ export async function GET({ params, url, locals }) {
         throw error(500, 'Error fetching sprint');
     }
 } 
+
+
+
+export async function PUT(event: RequestEvent) {
+    const { request, params } = event;
+    const id = params.id;
+
+    if (!id) {
+        return json({ error: 'Sprint ID is required' }, { status: 400 });
+    }
+
+    try {
+        const { name, start_date, end_date } = await request.json();
+        const updatedFields: Record<string, any> = {};
+
+        if (name !== undefined) updatedFields.name = name;
+        if (start_date !== undefined) updatedFields.start_date = start_date;
+        if (end_date !== undefined) updatedFields.end_date = end_date;
+
+        if (Object.keys(updatedFields).length === 0) {
+            return json({ error: 'No valid fields to update' }, { status: 400 });
+        }
+
+        const { data, error } = await event.locals.supabase
+            .from('sprints')
+            .update(updatedFields)
+            .eq('id', id)
+            .select()
+            .single();
+
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        return json({ message: 'Sprint updated successfully', sprint: data }, { status: 200 });
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
+        return json({ error: errorMessage }, { status: 500 });
+    }
+}
+
+export async function DELETE(event: RequestEvent) {
+    const { params } = event;
+    const id = params.id;
+
+    if (!id) {
+        return json({ error: 'Sprint ID is required' }, { status: 400 });
+    }
+
+    try {
+        const { error } = await event.locals.supabase
+            .from('sprints')
+            .delete() 
+            .eq('id', id);
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        return json({ message: 'Sprint deleted successfully' }, { status: 200 });
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
+        return json({ error: errorMessage }, { status: 500 });
+    }
+}

@@ -11,7 +11,7 @@ export async function GET(event: RequestEvent) {
         const now = new Date().toISOString();
         const { data, error } = await event.locals.supabase
             .from('sprints')
-            .select('id')
+            .select()
             .eq('project_id', project_id)
             .lte('start_date', now)
             .gte('end_date', now ).maybeSingle()
