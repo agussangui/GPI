@@ -15,7 +15,7 @@
 	import type { UserStoryClass } from "$models/userStory";
 
 	let projectId: string;
-	let projectName: string = 'GPI';
+	let projectName: string | null;
     let currentSprint: SprintClass | null;
     let userStoryList: UserStoryClass[] = [];
     
@@ -42,12 +42,13 @@
 		// { id: 'timeline', label: 'Timeline', icon: Timeline, href: `/projects/${projectId}/timeline` }
 	];
 
-	// Check if the route is active
 	function isRouteActive(path: string): boolean {
-		return page.url.pathname.endsWith(path);
+    	if (path === `/projects/${projectId}`) {
+        	return page.url.pathname === path;
+    	}
+    	return page.url.pathname.startsWith(path);
 	}
 
-	let showModal = false;
 </script>
 
 <aside class="side-menu-wrapper">

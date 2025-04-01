@@ -34,6 +34,6 @@
   });
 </script>
 
-<div class="m-10">
+<div>
   <slot />
 </div>

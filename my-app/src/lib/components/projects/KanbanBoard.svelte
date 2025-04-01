@@ -124,7 +124,8 @@
                             <div>
                                 <h3 class="font-semibold">{story.title}</h3>
                                 <p class="text-sm text-gray-600">{story.description}</p>
-                                <span class="text-xs text-gray-500">Priority: {story.priority}</span>
+                                <p class="py-1 text-xs text-gray-500">Priority: {story.priority}</p>
+                                <p class="text-xs text-gray-500">Story points: {story.story_points}</p  >
                                 
                                 {#if Number(story.status_id) === UserStoryStatusEnum.done}
                                     {#if editCompletionDateId === story.id}
