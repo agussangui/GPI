@@ -31,8 +31,6 @@
 		);
 
 		projectStore.set({ membersMap: membersMap})
-		console.log("miembros"+membersMap)
-		console.log("miembros"+members.length)
     }
   });
 

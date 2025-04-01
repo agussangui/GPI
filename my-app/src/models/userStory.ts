@@ -73,7 +73,8 @@ export class UserStoryClass implements UserStoryInterface {
         story.story_points,
         story.created_at,
         story.status_id,
-        story.completion_date
+        story.completion_date,
+        story.assigned_to?  story.assigned_to : []
     );
 }
   getStatus(): string {
@@ -95,7 +96,8 @@ export class UserStoryClass implements UserStoryInterface {
         updatedFields.story_points !== undefined ? updatedFields.story_points : this.story_points,
         this.created_at,
         updatedFields.status_id !== undefined ? updatedFields.status_id : this.status_id,
-        updatedFields.completion_date !== undefined ? updatedFields.completion_date : this.completion_date
+        updatedFields.completion_date !== undefined ? updatedFields.completion_date : this.completion_date,
+        updatedFields.assigned_to !== undefined ? updatedFields.assigned_to : this.assigned_to
     );
   }
 

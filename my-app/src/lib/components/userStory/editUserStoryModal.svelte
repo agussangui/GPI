@@ -62,7 +62,6 @@
           }
           const result = await response.json();
           userStory = userStory.copyWithUpdatedFields(updatedFields);
-          console.log(userStory)
           
         } catch (error) {
             errorToaster =true
