@@ -35,7 +35,7 @@
 
             showModal = false;
 
-            const project = ProjectClass.getSingleProjectFromJson(result);
+            const project = ProjectClass.getSingleProjectFromJson(result.project);
             goto(`/projects/${project.id}/backlog`);
 
 
