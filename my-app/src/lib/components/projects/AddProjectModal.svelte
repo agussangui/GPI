@@ -36,7 +36,7 @@
             showModal = false;
 
             const project = ProjectClass.getSingleProjectFromJson(result.project);
-            goto(`/projects/${project.id}/backlog`);
+            goto(`/projects/${project.id}`);
 
 
         } catch (error) {
